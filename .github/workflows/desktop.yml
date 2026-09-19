@@ -1,0 +1,101 @@
+# Desktop app builds, on a tag or by hand.
+#
+# Same shape as SoundBench's desktop.yml, which is the house pattern: one
+# universal macOS row (Tauri's universal-apple-darwin target compiles both
+# slices on the Apple Silicon runner and lipos them), Linux, and Windows.
+# The macOS artefact is unsigned here; the fleet's autosign agent re-signs
+# and notarises it after the release is published.
+
+name: desktop
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-14
+            target: universal-apple-darwin
+            rust_targets: aarch64-apple-darwin,x86_64-apple-darwin
+            name: macOS (universal)
+            args: '--target universal-apple-darwin'
+          - platform: ubuntu-22.04
+            target: ''
+            name: Linux
+            args: ''
+          - platform: windows-latest
+            target: ''
+            name: Windows
+            args: ''
+
+    runs-on: ${{ matrix.platform }}
+    name: ${{ matrix.name }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_targets || matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Linux build dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - run: npm ci
+
+      - name: Test
+        working-directory: src-tauri
+        run: cargo test --workspace
+
+      - uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: ${{ matrix.args }}
+          tagName: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+          releaseName: 'Songbook __VERSION__'
+          releaseDraft: false
+          prerelease: false
+
+      # Proof that "universal" is universal rather than a name on a thin
+      # binary. Captured and matched with `case`, never piped into grep:
+      # steps run as `bash -eo pipefail`, so grep exiting at its first match
+      # SIGPIPEs lipo and fails the step BECAUSE the match was found.
+      - name: Verify the macOS bundle is universal
+        if: matrix.target == 'universal-apple-darwin'
+        shell: bash
+        run: |
+          appdir="src-tauri/target/${{ matrix.target }}/release/bundle/macos"
+          app="$(find "$appdir" -maxdepth 1 -name '*.app' | head -1)"
+          [ -n "$app" ] || { echo "no .app produced in $appdir" >&2; exit 1; }
+          exe="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app/Contents/Info.plist")"
+          __archs="$( lipo -archs "$app/Contents/MacOS/$exe" )"
+          echo "$(basename "$app")/Contents/MacOS/$exe: $__archs"
+          case "$__archs" in
+            *arm64*) ;;
+            *) echo "expected an arm64 slice, got: $__archs" >&2; exit 1 ;;
+          esac
+          case "$__archs" in
+            *x86_64*) ;;
+            *) echo "expected an x86_64 slice, got: $__archs" >&2; exit 1 ;;
+          esac

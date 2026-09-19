@@ -1,0 +1,15 @@
+[package]
+name = "songbook-companion"
+description = "Bitfocus Companion page export/import: a page of mute, fader and scene buttons from a show, and reading a page back against it"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+songbook-model = { path = "../songbook-model" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+sha2 = { workspace = true }
+flate2 = { workspace = true }

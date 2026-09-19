@@ -1,0 +1,12 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "What the main window may do. Small on purpose: files, devices and the library all go through the app's own commands, so the window needs only the core, the open/save dialogs, and the opener for links.",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "opener:allow-open-url",
+    "dialog:allow-open",
+    "dialog:allow-save"
+  ]
+}

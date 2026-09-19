@@ -1,0 +1,68 @@
+# Build and test on every platform the app ships for.
+#
+# The Rust crates carry the real tests (the drivers on the simulator
+# fixtures, the library, the conversion, the Companion export), so every
+# operating system runs the whole workspace; the front end is linted,
+# tested and built once.
+
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - name: Lockfile matches manifest
+        run: npm ls --all >/dev/null
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  rust:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-14
+            name: macOS
+            features: ''
+          - platform: ubuntu-22.04
+            name: Linux
+            features: ''
+          - platform: windows-latest
+            name: Windows
+            features: ''
+    runs-on: ${{ matrix.platform }}
+    name: rust — ${{ matrix.name }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+      - name: Linux build dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      # The Tauri crate embeds the frontend at compile time; the workspace
+      # crates do not need it, but `cargo test --workspace` builds them all.
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Test
+        working-directory: src-tauri
+        run: cargo test --workspace ${{ matrix.features }}

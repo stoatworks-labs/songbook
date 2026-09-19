@@ -1,0 +1,52 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Songbook",
+  "version": "0.1.0",
+  "identifier": "com.allansargeant.songbook",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devUrl": "http://localhost:5178",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Songbook",
+        "width": 1400,
+        "height": 900,
+        "minWidth": 1000,
+        "minHeight": 640,
+        "resizable": true,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self' tauri:; script-src 'self' tauri:; style-src 'self' tauri: 'unsafe-inline'; img-src 'self' tauri: data: blob:; connect-src 'self' tauri: ipc: http://ipc.localhost; worker-src 'self' blob:"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "app",
+      "dmg",
+      "nsis",
+      "deb",
+      "rpm"
+    ],
+    "category": "Utility",
+    "shortDescription": "Show file library for digital mixing desks",
+    "longDescription": "Keep a library of mixing desk show files with version history. Inspect the I/O, channels, sends, buses, scenes and cues, generate PDF documentation, label strips and Companion pages, convert between Allen & Heath and Yamaha desks, and pull from or push to the live desk.",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "10.15"
+    }
+  }
+}

@@ -1,0 +1,3867 @@
+{
+  "schema": "songbook/1",
+  "id": "demo-sq5-band",
+  "meta": {
+    "name": "Summer Live 2026 — FOH",
+    "notes": "Main stage, Saturday. Wedges on Aux 1–6, IEM stereo on Aux 7/8 + 9/10. FX1 hall, FX2 plate, FX3 tap delay.",
+    "tags": [
+      "festival",
+      "band"
+    ],
+    "created": "2026-09-19T20:28:29Z",
+    "modified": "2026-09-19T20:28:29Z"
+  },
+  "platform": "ah-sq",
+  "system": {
+    "model": "SQ-5",
+    "firmware": "1.6.0",
+    "name": "SQ-5 FOH",
+    "units": [
+      {
+        "id": "unit:local",
+        "label": "SQ-5 local sockets",
+        "model": "SQ-5",
+        "role": "console"
+      },
+      {
+        "id": "unit:slink",
+        "label": "SLink",
+        "model": "SLink",
+        "role": "network"
+      },
+      {
+        "id": "unit:usb",
+        "label": "USB-B audio",
+        "model": "USB",
+        "role": "internal"
+      },
+      {
+        "id": "unit:input",
+        "label": "Input sockets",
+        "model": "",
+        "role": "console"
+      }
+    ]
+  },
+  "sockets": [
+    {
+      "id": "skt:local:in:1",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 1,
+      "label": "Local 1"
+    },
+    {
+      "id": "skt:local:in:2",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 2,
+      "label": "Local 2"
+    },
+    {
+      "id": "skt:local:in:3",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 3,
+      "label": "Local 3"
+    },
+    {
+      "id": "skt:local:in:4",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 4,
+      "label": "Local 4"
+    },
+    {
+      "id": "skt:local:in:5",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 5,
+      "label": "Local 5"
+    },
+    {
+      "id": "skt:local:in:6",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 6,
+      "label": "Local 6"
+    },
+    {
+      "id": "skt:local:in:7",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 7,
+      "label": "Local 7"
+    },
+    {
+      "id": "skt:local:in:8",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 8,
+      "label": "Local 8"
+    },
+    {
+      "id": "skt:local:in:9",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 9,
+      "label": "Local 9"
+    },
+    {
+      "id": "skt:local:in:10",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 10,
+      "label": "Local 10"
+    },
+    {
+      "id": "skt:local:in:11",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 11,
+      "label": "Local 11"
+    },
+    {
+      "id": "skt:local:in:12",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 12,
+      "label": "Local 12"
+    },
+    {
+      "id": "skt:local:in:13",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 13,
+      "label": "Local 13"
+    },
+    {
+      "id": "skt:local:in:14",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 14,
+      "label": "Local 14"
+    },
+    {
+      "id": "skt:local:in:15",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 15,
+      "label": "Local 15"
+    },
+    {
+      "id": "skt:local:in:16",
+      "unitId": "unit:local",
+      "kind": "mic",
+      "direction": "in",
+      "index": 16,
+      "label": "Local 16"
+    },
+    {
+      "id": "skt:local:out:1",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "out",
+      "index": 1,
+      "label": "Out 1"
+    },
+    {
+      "id": "skt:local:out:2",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "out",
+      "index": 2,
+      "label": "Out 2"
+    },
+    {
+      "id": "skt:local:out:3",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "out",
+      "index": 3,
+      "label": "Out 3"
+    },
+    {
+      "id": "skt:local:out:4",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "out",
+      "index": 4,
+      "label": "Out 4"
+    },
+    {
+      "id": "skt:local:out:5",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "out",
+      "index": 5,
+      "label": "Out 5"
+    },
+    {
+      "id": "skt:local:out:6",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "out",
+      "index": 6,
+      "label": "Out 6"
+    },
+    {
+      "id": "skt:local:out:7",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "out",
+      "index": 7,
+      "label": "Out 7"
+    },
+    {
+      "id": "skt:local:out:8",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "out",
+      "index": 8,
+      "label": "Out 8"
+    },
+    {
+      "id": "skt:local:out:9",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "out",
+      "index": 9,
+      "label": "Out 9"
+    },
+    {
+      "id": "skt:local:out:10",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "out",
+      "index": 10,
+      "label": "Out 10"
+    },
+    {
+      "id": "skt:local:out:11",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "out",
+      "index": 11,
+      "label": "Out 11"
+    },
+    {
+      "id": "skt:local:out:12",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "out",
+      "index": 12,
+      "label": "Out 12"
+    },
+    {
+      "id": "skt:input:in:1",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 1,
+      "label": "Input socket 1"
+    },
+    {
+      "id": "skt:input:in:2",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 2,
+      "label": "Input socket 2"
+    },
+    {
+      "id": "skt:input:in:3",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 3,
+      "label": "Input socket 3"
+    },
+    {
+      "id": "skt:input:in:4",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 4,
+      "label": "Input socket 4"
+    },
+    {
+      "id": "skt:input:in:5",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 5,
+      "label": "Input socket 5"
+    },
+    {
+      "id": "skt:input:in:6",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 6,
+      "label": "Input socket 6"
+    },
+    {
+      "id": "skt:input:in:7",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 7,
+      "label": "Input socket 7"
+    },
+    {
+      "id": "skt:input:in:8",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 8,
+      "label": "Input socket 8"
+    },
+    {
+      "id": "skt:input:in:9",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 9,
+      "label": "Input socket 9"
+    },
+    {
+      "id": "skt:input:in:10",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 10,
+      "label": "Input socket 10"
+    },
+    {
+      "id": "skt:input:in:11",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 11,
+      "label": "Input socket 11"
+    },
+    {
+      "id": "skt:input:in:12",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 12,
+      "label": "Input socket 12"
+    },
+    {
+      "id": "skt:input:in:13",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 13,
+      "label": "Input socket 13"
+    },
+    {
+      "id": "skt:input:in:14",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 14,
+      "label": "Input socket 14"
+    },
+    {
+      "id": "skt:input:in:15",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 15,
+      "label": "Input socket 15"
+    },
+    {
+      "id": "skt:input:in:16",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 16,
+      "label": "Input socket 16"
+    },
+    {
+      "id": "skt:input:in:17",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 17,
+      "label": "Input socket 17"
+    },
+    {
+      "id": "skt:input:in:18",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 18,
+      "label": "Input socket 18"
+    },
+    {
+      "id": "skt:input:in:19",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 19,
+      "label": "Input socket 19"
+    },
+    {
+      "id": "skt:input:in:20",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 20,
+      "label": "Input socket 20"
+    },
+    {
+      "id": "skt:input:in:21",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 21,
+      "label": "Input socket 21"
+    },
+    {
+      "id": "skt:input:in:22",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 22,
+      "label": "Input socket 22"
+    },
+    {
+      "id": "skt:input:in:23",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 23,
+      "label": "Input socket 23"
+    },
+    {
+      "id": "skt:input:in:24",
+      "unitId": "unit:input",
+      "kind": "mic",
+      "direction": "in",
+      "index": 24,
+      "label": "Input socket 24"
+    }
+  ],
+  "preamps": [
+    {
+      "socketId": "skt:input:in:1",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:2",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:3",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:4",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:5",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:6",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:7",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:8",
+      "gainDb": 30.0,
+      "pad": false,
+      "phantom": true
+    },
+    {
+      "socketId": "skt:input:in:9",
+      "gainDb": 30.0,
+      "pad": false,
+      "phantom": true
+    },
+    {
+      "socketId": "skt:input:in:10",
+      "gainDb": 18.0,
+      "pad": false,
+      "phantom": true
+    },
+    {
+      "socketId": "skt:input:in:11",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:12",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:13",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:14",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:15",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:16",
+      "gainDb": 38.0,
+      "pad": false,
+      "phantom": true
+    },
+    {
+      "socketId": "skt:input:in:17",
+      "gainDb": 38.0,
+      "pad": false,
+      "phantom": true
+    },
+    {
+      "socketId": "skt:input:in:18",
+      "gainDb": 38.0,
+      "pad": false,
+      "phantom": true
+    },
+    {
+      "socketId": "skt:input:in:19",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": true
+    },
+    {
+      "socketId": "skt:input:in:20",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:21",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    },
+    {
+      "socketId": "skt:input:in:22",
+      "gainDb": 26.0,
+      "pad": false,
+      "phantom": false
+    }
+  ],
+  "channels": [
+    {
+      "id": "ch:1",
+      "number": 1,
+      "kind": "input",
+      "label": "Kick In",
+      "color": "red",
+      "stereo": false,
+      "source": "skt:input:in:1",
+      "strip": {
+        "faderDb": -6.0,
+        "on": true,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": false,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": true
+        },
+        "comp": {
+          "on": true
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:1"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:2",
+      "number": 2,
+      "kind": "input",
+      "label": "Kick Out",
+      "color": "red",
+      "stereo": false,
+      "source": "skt:input:in:2",
+      "strip": {
+        "faderDb": -8.0,
+        "on": true,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": false,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": true
+        },
+        "comp": {
+          "on": true
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:1"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:3",
+      "number": 3,
+      "kind": "input",
+      "label": "Snare Tp",
+      "color": "red",
+      "stereo": false,
+      "source": "skt:input:in:3",
+      "strip": {
+        "faderDb": -4.0,
+        "on": true,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": true
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:fx:2",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": false
+        }
+      ],
+      "dcaIds": [
+        "dca:1"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:4",
+      "number": 4,
+      "kind": "input",
+      "label": "Snare Bt",
+      "color": "red",
+      "stereo": false,
+      "source": "skt:input:in:4",
+      "strip": {
+        "faderDb": -12.0,
+        "on": true,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": true
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:fx:2",
+          "levelDb": -10.0,
+          "on": true,
+          "pre": false
+        }
+      ],
+      "dcaIds": [
+        "dca:1"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:5",
+      "number": 5,
+      "kind": "input",
+      "label": "Hat",
+      "color": "red",
+      "stereo": false,
+      "source": "skt:input:in:5",
+      "strip": {
+        "faderDb": -10.0,
+        "on": true,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:1"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:6",
+      "number": 6,
+      "kind": "input",
+      "label": "Rack",
+      "color": "red",
+      "stereo": false,
+      "source": "skt:input:in:6",
+      "strip": {
+        "faderDb": -9.0,
+        "on": true,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": true
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:1"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:7",
+      "number": 7,
+      "kind": "input",
+      "label": "Floor",
+      "color": "red",
+      "stereo": false,
+      "source": "skt:input:in:7",
+      "strip": {
+        "faderDb": -7.0,
+        "on": true,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": true
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:1"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:8",
+      "number": 8,
+      "kind": "input",
+      "label": "OH L",
+      "color": "red",
+      "stereo": false,
+      "source": "skt:input:in:8",
+      "strip": {
+        "faderDb": -8.0,
+        "on": true,
+        "pan": -0.7,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:1"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:9",
+      "number": 9,
+      "kind": "input",
+      "label": "OH R",
+      "color": "red",
+      "stereo": false,
+      "source": "skt:input:in:9",
+      "strip": {
+        "faderDb": -8.0,
+        "on": true,
+        "pan": 0.7,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:1"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:10",
+      "number": 10,
+      "kind": "input",
+      "label": "Bass DI",
+      "color": "purple",
+      "stereo": false,
+      "source": "skt:input:in:10",
+      "strip": {
+        "faderDb": -3.0,
+        "on": true,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": false,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": true
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:2"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:11",
+      "number": 11,
+      "kind": "input",
+      "label": "Bass Mic",
+      "color": "purple",
+      "stereo": false,
+      "source": "skt:input:in:11",
+      "strip": {
+        "faderDb": -12.0,
+        "on": true,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": false,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": true
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:2"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:12",
+      "number": 12,
+      "kind": "input",
+      "label": "Gtr L",
+      "color": "yellow",
+      "stereo": false,
+      "source": "skt:input:in:12",
+      "strip": {
+        "faderDb": -6.0,
+        "on": true,
+        "pan": -0.7,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:3"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:13",
+      "number": 13,
+      "kind": "input",
+      "label": "Gtr R",
+      "color": "yellow",
+      "stereo": false,
+      "source": "skt:input:in:13",
+      "strip": {
+        "faderDb": -6.0,
+        "on": true,
+        "pan": 0.7,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:3"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:14",
+      "number": 14,
+      "kind": "input",
+      "label": "Keys L",
+      "color": "blue",
+      "stereo": false,
+      "source": "skt:input:in:14",
+      "strip": {
+        "faderDb": -10.0,
+        "on": true,
+        "pan": -0.7,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:4"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:15",
+      "number": 15,
+      "kind": "input",
+      "label": "Keys R",
+      "color": "blue",
+      "stereo": false,
+      "source": "skt:input:in:15",
+      "strip": {
+        "faderDb": -10.0,
+        "on": true,
+        "pan": 0.7,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:4"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:16",
+      "number": 16,
+      "kind": "input",
+      "label": "Vox Lead",
+      "color": "green",
+      "stereo": false,
+      "source": "skt:input:in:16",
+      "strip": {
+        "faderDb": 0.0,
+        "on": true,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 120.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": true
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -4.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -4.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -4.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -4.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:fx:1",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:fx:2",
+          "levelDb": -18.0,
+          "on": true,
+          "pre": false
+        }
+      ],
+      "dcaIds": [
+        "dca:5"
+      ],
+      "muteGroupIds": [
+        "mg:1"
+      ]
+    },
+    {
+      "id": "ch:17",
+      "number": 17,
+      "kind": "input",
+      "label": "Vox BV1",
+      "color": "green",
+      "stereo": false,
+      "source": "skt:input:in:17",
+      "strip": {
+        "faderDb": -3.0,
+        "on": true,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 120.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": true
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -4.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -4.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -4.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -4.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:fx:1",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:fx:2",
+          "levelDb": -18.0,
+          "on": true,
+          "pre": false
+        }
+      ],
+      "dcaIds": [
+        "dca:5"
+      ],
+      "muteGroupIds": [
+        "mg:1"
+      ]
+    },
+    {
+      "id": "ch:18",
+      "number": 18,
+      "kind": "input",
+      "label": "Vox BV2",
+      "color": "green",
+      "stereo": false,
+      "source": "skt:input:in:18",
+      "strip": {
+        "faderDb": -3.0,
+        "on": true,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 120.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": true
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -4.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -4.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -4.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -4.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:fx:1",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:fx:2",
+          "levelDb": -18.0,
+          "on": true,
+          "pre": false
+        }
+      ],
+      "dcaIds": [
+        "dca:5"
+      ],
+      "muteGroupIds": [
+        "mg:1"
+      ]
+    },
+    {
+      "id": "ch:19",
+      "number": 19,
+      "kind": "input",
+      "label": "Acoustic",
+      "color": "yellow",
+      "stereo": false,
+      "source": "skt:input:in:19",
+      "strip": {
+        "faderDb": -8.0,
+        "on": true,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [
+        "dca:3"
+      ],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:20",
+      "number": 20,
+      "kind": "input",
+      "label": "Talkback",
+      "color": "white",
+      "stereo": false,
+      "source": "skt:input:in:20",
+      "strip": {
+        "faderDb": -144.0,
+        "on": false,
+        "pan": 0.0,
+        "mainAssign": false,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:21",
+      "number": 21,
+      "kind": "input",
+      "label": "Spare 1",
+      "stereo": false,
+      "source": "skt:input:in:21",
+      "strip": {
+        "faderDb": -144.0,
+        "on": false,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:22",
+      "number": 22,
+      "kind": "input",
+      "label": "Spare 2",
+      "stereo": false,
+      "source": "skt:input:in:22",
+      "strip": {
+        "faderDb": -144.0,
+        "on": false,
+        "pan": 0.0,
+        "mainAssign": true,
+        "hpf": {
+          "on": true,
+          "freqHz": 80.0
+        },
+        "eq": {
+          "on": true,
+          "bands": []
+        },
+        "gate": {
+          "on": false
+        },
+        "comp": {
+          "on": false
+        }
+      },
+      "sends": [
+        {
+          "busId": "bus:aux:1",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:2",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:3",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:4",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:5",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:6",
+          "levelDb": -14.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:7",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:8",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:9",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        },
+        {
+          "busId": "bus:aux:10",
+          "levelDb": -12.0,
+          "on": true,
+          "pre": true
+        }
+      ],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:23",
+      "number": 23,
+      "kind": "input",
+      "label": "Ip23",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:24",
+      "number": 24,
+      "kind": "input",
+      "label": "Ip24",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:25",
+      "number": 25,
+      "kind": "input",
+      "label": "Ip25",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:26",
+      "number": 26,
+      "kind": "input",
+      "label": "Ip26",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:27",
+      "number": 27,
+      "kind": "input",
+      "label": "Ip27",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:28",
+      "number": 28,
+      "kind": "input",
+      "label": "Ip28",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:29",
+      "number": 29,
+      "kind": "input",
+      "label": "Ip29",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:30",
+      "number": 30,
+      "kind": "input",
+      "label": "Ip30",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:31",
+      "number": 31,
+      "kind": "input",
+      "label": "Ip31",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:32",
+      "number": 32,
+      "kind": "input",
+      "label": "Ip32",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:33",
+      "number": 33,
+      "kind": "input",
+      "label": "Ip33",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:34",
+      "number": 34,
+      "kind": "input",
+      "label": "Ip34",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:35",
+      "number": 35,
+      "kind": "input",
+      "label": "Ip35",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:36",
+      "number": 36,
+      "kind": "input",
+      "label": "Ip36",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:37",
+      "number": 37,
+      "kind": "input",
+      "label": "Ip37",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:38",
+      "number": 38,
+      "kind": "input",
+      "label": "Ip38",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:39",
+      "number": 39,
+      "kind": "input",
+      "label": "Ip39",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:40",
+      "number": 40,
+      "kind": "input",
+      "label": "Ip40",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:41",
+      "number": 41,
+      "kind": "input",
+      "label": "Ip41",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:42",
+      "number": 42,
+      "kind": "input",
+      "label": "Ip42",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:43",
+      "number": 43,
+      "kind": "input",
+      "label": "Ip43",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:44",
+      "number": 44,
+      "kind": "input",
+      "label": "Ip44",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:45",
+      "number": 45,
+      "kind": "input",
+      "label": "Ip45",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:46",
+      "number": 46,
+      "kind": "input",
+      "label": "Ip46",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:47",
+      "number": 47,
+      "kind": "input",
+      "label": "Ip47",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "ch:48",
+      "number": 48,
+      "kind": "input",
+      "label": "Ip48",
+      "stereo": false,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "st:1",
+      "number": 1,
+      "kind": "stereo-input",
+      "label": "ST1",
+      "stereo": true,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "st:2",
+      "number": 2,
+      "kind": "stereo-input",
+      "label": "ST2",
+      "stereo": true,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "st:3",
+      "number": 3,
+      "kind": "stereo-input",
+      "label": "ST3",
+      "stereo": true,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "st:4",
+      "number": 4,
+      "kind": "stereo-input",
+      "label": "USB",
+      "stereo": true,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "fxr:1",
+      "number": 1,
+      "kind": "fx-return",
+      "label": "FX1Rtn",
+      "stereo": true,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "fxr:2",
+      "number": 2,
+      "kind": "fx-return",
+      "label": "FX2Rtn",
+      "stereo": true,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "fxr:3",
+      "number": 3,
+      "kind": "fx-return",
+      "label": "FX3Rtn",
+      "stereo": true,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "fxr:4",
+      "number": 4,
+      "kind": "fx-return",
+      "label": "FX4Rtn",
+      "stereo": true,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "fxr:5",
+      "number": 5,
+      "kind": "fx-return",
+      "label": "FX5Rtn",
+      "stereo": true,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "fxr:6",
+      "number": 6,
+      "kind": "fx-return",
+      "label": "FX6Rtn",
+      "stereo": true,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "fxr:7",
+      "number": 7,
+      "kind": "fx-return",
+      "label": "FX7Rtn",
+      "stereo": true,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "fxr:8",
+      "number": 8,
+      "kind": "fx-return",
+      "label": "FX8Rtn",
+      "stereo": true,
+      "strip": {},
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    }
+  ],
+  "buses": [
+    {
+      "id": "bus:main:1",
+      "number": 1,
+      "kind": "main",
+      "label": "LR",
+      "color": "white",
+      "stereo": true,
+      "strip": {
+        "faderDb": -3.0,
+        "on": true
+      },
+      "sends": [
+        {
+          "busId": "bus:mtx:1",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:2",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:3",
+          "levelDb": -6.0,
+          "on": true,
+          "pre": false
+        }
+      ],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:aux:1",
+      "number": 1,
+      "kind": "aux",
+      "label": "Wedge 1",
+      "color": "yellow",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [
+        {
+          "busId": "bus:mtx:1",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:2",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:3",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        }
+      ],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:aux:2",
+      "number": 2,
+      "kind": "aux",
+      "label": "Wedge 2",
+      "color": "yellow",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [
+        {
+          "busId": "bus:mtx:1",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:2",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:3",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        }
+      ],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:aux:3",
+      "number": 3,
+      "kind": "aux",
+      "label": "Wedge 3",
+      "color": "yellow",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [
+        {
+          "busId": "bus:mtx:1",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:2",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:3",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        }
+      ],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:aux:4",
+      "number": 4,
+      "kind": "aux",
+      "label": "Wedge 4",
+      "color": "yellow",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [
+        {
+          "busId": "bus:mtx:1",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:2",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:3",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        }
+      ],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:aux:5",
+      "number": 5,
+      "kind": "aux",
+      "label": "Drum Fill",
+      "color": "yellow",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [
+        {
+          "busId": "bus:mtx:1",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:2",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:3",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        }
+      ],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:aux:6",
+      "number": 6,
+      "kind": "aux",
+      "label": "Side Fill",
+      "color": "yellow",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [
+        {
+          "busId": "bus:mtx:1",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:2",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        },
+        {
+          "busId": "bus:mtx:3",
+          "levelDb": -144.0,
+          "on": true,
+          "pre": false
+        }
+      ],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:aux:7",
+      "number": 7,
+      "kind": "aux",
+      "label": "IEM 1 L",
+      "color": "cyan",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:aux:8",
+      "number": 8,
+      "kind": "aux",
+      "label": "IEM 1 R",
+      "color": "cyan",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:aux:9",
+      "number": 9,
+      "kind": "aux",
+      "label": "IEM 2 L",
+      "color": "cyan",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:aux:10",
+      "number": 10,
+      "kind": "aux",
+      "label": "IEM 2 R",
+      "color": "cyan",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:aux:11",
+      "number": 11,
+      "kind": "aux",
+      "label": "Sub",
+      "color": "yellow",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:aux:12",
+      "number": 12,
+      "kind": "aux",
+      "label": "Rec",
+      "color": "yellow",
+      "stereo": true,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:fx:1",
+      "number": 1,
+      "kind": "fx-send",
+      "label": "Hall",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:fx:2",
+      "number": 2,
+      "kind": "fx-send",
+      "label": "Plate",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:fx:3",
+      "number": 3,
+      "kind": "fx-send",
+      "label": "Tap Dly",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:fx:4",
+      "number": 4,
+      "kind": "fx-send",
+      "label": "Chorus",
+      "stereo": false,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:mtx:1",
+      "number": 1,
+      "kind": "matrix",
+      "label": "Fills",
+      "stereo": true,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:mtx:2",
+      "number": 2,
+      "kind": "matrix",
+      "label": "Lobby",
+      "stereo": true,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    },
+    {
+      "id": "bus:mtx:3",
+      "number": 3,
+      "kind": "matrix",
+      "label": "Rec",
+      "stereo": true,
+      "strip": {
+        "faderDb": 0.0,
+        "on": true
+      },
+      "sends": [],
+      "dcaIds": [],
+      "muteGroupIds": []
+    }
+  ],
+  "dcas": [
+    {
+      "id": "dca:1",
+      "number": 1,
+      "label": "Drums",
+      "faderDb": 0.0,
+      "on": true
+    },
+    {
+      "id": "dca:2",
+      "number": 2,
+      "label": "Bass",
+      "faderDb": 0.0,
+      "on": true
+    },
+    {
+      "id": "dca:3",
+      "number": 3,
+      "label": "Gtrs",
+      "faderDb": 0.0,
+      "on": true
+    },
+    {
+      "id": "dca:4",
+      "number": 4,
+      "label": "Keys",
+      "faderDb": 0.0,
+      "on": true
+    },
+    {
+      "id": "dca:5",
+      "number": 5,
+      "label": "Vox",
+      "faderDb": 0.0,
+      "on": true
+    },
+    {
+      "id": "dca:6",
+      "number": 6,
+      "label": "FX",
+      "faderDb": 0.0,
+      "on": true
+    },
+    {
+      "id": "dca:7",
+      "number": 7,
+      "label": "Band",
+      "faderDb": 0.0,
+      "on": true
+    },
+    {
+      "id": "dca:8",
+      "number": 8,
+      "label": "All",
+      "faderDb": 0.0,
+      "on": true
+    }
+  ],
+  "muteGroups": [
+    {
+      "id": "mg:1",
+      "number": 1,
+      "label": "Vox"
+    },
+    {
+      "id": "mg:2",
+      "number": 2,
+      "label": "Band"
+    },
+    {
+      "id": "mg:3",
+      "number": 3,
+      "label": "FX"
+    },
+    {
+      "id": "mg:4",
+      "number": 4,
+      "label": "MGrp4"
+    },
+    {
+      "id": "mg:5",
+      "number": 5,
+      "label": "MGrp5"
+    },
+    {
+      "id": "mg:6",
+      "number": 6,
+      "label": "MGrp6"
+    },
+    {
+      "id": "mg:7",
+      "number": 7,
+      "label": "MGrp7"
+    },
+    {
+      "id": "mg:8",
+      "number": 8,
+      "label": "MGrp8"
+    }
+  ],
+  "outputPatch": [
+    {
+      "socketId": "skt:local:out:1",
+      "source": {
+        "kind": "bus",
+        "refId": "bus:main:1",
+        "label": "LR L"
+      }
+    },
+    {
+      "socketId": "skt:local:out:2",
+      "source": {
+        "kind": "bus",
+        "refId": "bus:main:1",
+        "label": "LR R"
+      }
+    },
+    {
+      "socketId": "skt:local:out:3",
+      "source": {
+        "kind": "bus",
+        "refId": "bus:aux:1",
+        "label": "Wedge 1"
+      }
+    },
+    {
+      "socketId": "skt:local:out:4",
+      "source": {
+        "kind": "bus",
+        "refId": "bus:aux:2",
+        "label": "Wedge 2"
+      }
+    },
+    {
+      "socketId": "skt:local:out:5",
+      "source": {
+        "kind": "bus",
+        "refId": "bus:aux:3",
+        "label": "Wedge 3"
+      }
+    },
+    {
+      "socketId": "skt:local:out:6",
+      "source": {
+        "kind": "bus",
+        "refId": "bus:aux:4",
+        "label": "Wedge 4"
+      }
+    },
+    {
+      "socketId": "skt:local:out:7",
+      "source": {
+        "kind": "bus",
+        "refId": "bus:aux:5",
+        "label": "Drum Fill"
+      }
+    },
+    {
+      "socketId": "skt:local:out:8",
+      "source": {
+        "kind": "bus",
+        "refId": "bus:aux:6",
+        "label": "Side Fill"
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene:1",
+      "number": 1,
+      "label": "Line check",
+      "notes": "All channels open, wedges at -10",
+      "filters": []
+    },
+    {
+      "id": "scene:2",
+      "number": 2,
+      "label": "Opening act",
+      "notes": "Acoustic + Vox Lead only",
+      "filters": []
+    },
+    {
+      "id": "scene:3",
+      "number": 3,
+      "label": "Main act",
+      "notes": "Full band",
+      "filters": []
+    },
+    {
+      "id": "scene:4",
+      "number": 4,
+      "label": "Encore",
+      "notes": "Main act + Tap Dly on Vox",
+      "filters": []
+    },
+    {
+      "id": "scene:5",
+      "number": 5,
+      "label": "Walk out",
+      "notes": "Playback only",
+      "filters": []
+    }
+  ],
+  "cues": [
+    {
+      "id": "cue:1",
+      "number": 1,
+      "label": "House open",
+      "notes": "Walk-in playlist on ST1",
+      "steps": [
+        {
+          "kind": "recall-scene",
+          "sceneId": "scene:5"
+        }
+      ]
+    },
+    {
+      "id": "cue:2",
+      "number": 2,
+      "label": "Opening act on",
+      "notes": "",
+      "steps": [
+        {
+          "kind": "recall-scene",
+          "sceneId": "scene:2"
+        }
+      ]
+    },
+    {
+      "id": "cue:3",
+      "number": 3,
+      "label": "Changeover",
+      "notes": "Line check scene; mute Vox",
+      "steps": [
+        {
+          "kind": "recall-scene",
+          "sceneId": "scene:1"
+        }
+      ]
+    },
+    {
+      "id": "cue:4",
+      "number": 4,
+      "label": "Main act on",
+      "notes": "GO on the drum count",
+      "steps": [
+        {
+          "kind": "recall-scene",
+          "sceneId": "scene:3"
+        }
+      ]
+    },
+    {
+      "id": "cue:5",
+      "number": 5,
+      "label": "Encore",
+      "notes": "",
+      "steps": [
+        {
+          "kind": "recall-scene",
+          "sceneId": "scene:4"
+        }
+      ]
+    },
+    {
+      "id": "cue:6",
+      "number": 6,
+      "label": "House lights",
+      "notes": "",
+      "steps": [
+        {
+          "kind": "recall-scene",
+          "sceneId": "scene:5"
+        }
+      ]
+    }
+  ],
+  "vendor": [],
+  "notes": [
+    {
+      "level": "info",
+      "path": "system",
+      "message": "example show authored for the browser demo — not captured from a desk"
+    }
+  ]
+}

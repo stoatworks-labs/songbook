@@ -1,0 +1,62 @@
+[package]
+name = "songbook"
+version = "0.1.0"
+description = "Show file library and documentation generator for digital mixing desks"
+authors = ["Allan Sargeant"]
+edition = "2021"
+license = "MIT"
+
+[lib]
+# The `_lib` suffix looks redundant and is not: on Windows the lib and bin names
+# must differ. https://github.com/rust-lang/cargo/issues/8519
+name = "songbook_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[workspace]
+members = [
+  "crates/songbook-model",
+  "crates/songbook-ah",
+  "crates/songbook-yamaha",
+  "crates/songbook-library",
+  "crates/songbook-convert",
+  "crates/songbook-companion",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["Allan Sargeant"]
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+thiserror = "2"
+sha2 = "0.10"
+hex = "0.4"
+uuid = { version = "1", features = ["v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+flate2 = "1"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+songbook-model = { path = "crates/songbook-model" }
+songbook-ah = { path = "crates/songbook-ah" }
+songbook-yamaha = { path = "crates/songbook-yamaha" }
+songbook-library = { path = "crates/songbook-library" }
+songbook-convert = { path = "crates/songbook-convert" }
+songbook-companion = { path = "crates/songbook-companion" }
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+serde = { workspace = true }
+serde_json = { workspace = true }
+base64 = "0.22"
+uuid = { workspace = true }
+zip = { version = "2", default-features = false, features = ["deflate"] }
+
+[profile.release]
+opt-level = 2
+lto = true

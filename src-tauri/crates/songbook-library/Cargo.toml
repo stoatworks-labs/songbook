@@ -1,0 +1,21 @@
+[package]
+name = "songbook-library"
+description = "The on-disk show library: shows, their version history, vendor blobs, and sync with a folder or a cloud drive"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+songbook-model = { path = "../songbook-model" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+sha2 = { workspace = true }
+hex = { workspace = true }
+uuid = { workspace = true }
+flate2 = "1"
+ureq = { version = "2", features = ["json"] }
+base64 = "0.22"
+rand = "0.8"
+url = "2"

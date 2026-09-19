@@ -1,0 +1,13 @@
+[package]
+name = "songbook-model"
+description = "The brand-neutral mixing desk show model every Songbook driver reads into and writes out of"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }

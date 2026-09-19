@@ -1,0 +1,17 @@
+node_modules
+dist
+*.local
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.log
+
+# Rust / Tauri. `target/` unanchored: each crate under src-tauri/crates/
+# builds into its own target/ when built standalone.
+target/
+src-tauri/gen/schemas/
+
+# Large captures used while developing the drivers; the trimmed fixtures
+# under fixtures/ are what the tests use.
+captures/

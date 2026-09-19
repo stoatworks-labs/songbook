@@ -1,0 +1,13 @@
+[package]
+name = "songbook-convert"
+description = "Capability tables per desk and the show conversion between platforms, with a carried / adapted / dropped report"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+songbook-model = { path = "../songbook-model" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
