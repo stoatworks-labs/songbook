@@ -22,13 +22,25 @@
 //! tested here.
 
 use std::collections::BTreeMap;
-use std::io::Read;
 use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::{Error, Result};
+
+/// ureq 3 caps a body read at 10 MB unless told otherwise; a vendor file or a
+/// gzip'd snapshot can be larger than that, so every download says its own
+/// limit. Nothing a library holds approaches a gigabyte.
+const BODY_LIMIT: u64 = 1024 * 1024 * 1024;
+
+fn json_body(mut resp: ureq::http::Response<ureq::Body>) -> Result<Value> {
+    resp.body_mut().with_config().limit(BODY_LIMIT).read_json::<Value>().map_err(|e| Error::Other(e.to_string()))
+}
+
+fn bytes_body(mut resp: ureq::http::Response<ureq::Body>) -> Result<Vec<u8>> {
+    resp.body_mut().with_config().limit(BODY_LIMIT).read_to_vec().map_err(|e| Error::Other(e.to_string()))
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -214,10 +226,10 @@ fn parse_rfc3339_secs(s: &str) -> u64 {
 impl DropboxProvider {
     fn api(&self, endpoint: &str, arg: Value) -> Result<Value> {
         let resp = ureq::post(&format!("https://api.dropboxapi.com/2/{endpoint}"))
-            .set("Authorization", &format!("Bearer {}", self.token))
+            .header("Authorization", &format!("Bearer {}", self.token))
             .send_json(arg)
             .map_err(|e| Error::Other(format!("dropbox {endpoint}: {e}")))?;
-        resp.into_json().map_err(|e| Error::Other(e.to_string()))
+        json_body(resp)
     }
     fn remote_path(&self, rel: &str) -> String {
         format!("{}/{}", self.root.trim_end_matches('/'), rel)
@@ -267,22 +279,20 @@ impl SyncProvider for DropboxProvider {
     }
     fn download(&mut self, file: &RemoteFile) -> Result<Vec<u8>> {
         let resp = ureq::post("https://content.dropboxapi.com/2/files/download")
-            .set("Authorization", &format!("Bearer {}", self.token))
-            .set("Dropbox-API-Arg", &json!({"path": self.remote_path(&file.path)}).to_string())
-            .call()
+            .header("Authorization", &format!("Bearer {}", self.token))
+            .header("Dropbox-API-Arg", &json!({"path": self.remote_path(&file.path)}).to_string())
+            .send_empty()
             .map_err(|e| Error::Other(format!("dropbox download: {e}")))?;
-        let mut buf = vec![];
-        resp.into_reader().read_to_end(&mut buf)?;
-        Ok(buf)
+        bytes_body(resp)
     }
     fn upload(&mut self, path: &str, bytes: &[u8], modified: u64) -> Result<()> {
         let stamp = unix_to_rfc3339(modified);
         let arg = json!({"path": self.remote_path(path), "mode": "overwrite", "mute": true, "client_modified": stamp});
         ureq::post("https://content.dropboxapi.com/2/files/upload")
-            .set("Authorization", &format!("Bearer {}", self.token))
-            .set("Dropbox-API-Arg", &arg.to_string())
-            .set("Content-Type", "application/octet-stream")
-            .send_bytes(bytes)
+            .header("Authorization", &format!("Bearer {}", self.token))
+            .header("Dropbox-API-Arg", &arg.to_string())
+            .header("Content-Type", "application/octet-stream")
+            .send(bytes)
             .map_err(|e| Error::Other(format!("dropbox upload: {e}")))?;
         Ok(())
     }
@@ -320,8 +330,8 @@ impl GoogleDriveProvider {
         GoogleDriveProvider { token, root_name, root_id: None, folders: BTreeMap::new() }
     }
     fn get(&self, url: &str) -> Result<Value> {
-        let resp = ureq::get(url).set("Authorization", &format!("Bearer {}", self.token)).call().map_err(|e| Error::Other(format!("drive: {e}")))?;
-        resp.into_json().map_err(|e| Error::Other(e.to_string()))
+        let resp = ureq::get(url).header("Authorization", &format!("Bearer {}", self.token)).call().map_err(|e| Error::Other(format!("drive: {e}")))?;
+        json_body(resp)
     }
     fn query(&self, q: &str) -> Result<Vec<Value>> {
         let mut out = vec![];
@@ -350,12 +360,12 @@ impl GoogleDriveProvider {
         if let Some(p) = parent {
             meta["parents"] = json!([p]);
         }
-        let v: Value = ureq::post("https://www.googleapis.com/drive/v3/files?fields=id")
-            .set("Authorization", &format!("Bearer {}", self.token))
-            .send_json(meta)
-            .map_err(|e| Error::Other(format!("drive mkdir: {e}")))?
-            .into_json()
-            .map_err(|e| Error::Other(e.to_string()))?;
+        let v: Value = json_body(
+            ureq::post("https://www.googleapis.com/drive/v3/files?fields=id")
+                .header("Authorization", &format!("Bearer {}", self.token))
+                .send_json(meta)
+                .map_err(|e| Error::Other(format!("drive mkdir: {e}")))?,
+        )?;
         v.get("id").and_then(Value::as_str).map(str::to_string).ok_or_else(|| Error::Other("drive mkdir: no id".into()))
     }
     fn root(&mut self) -> Result<String> {
@@ -425,12 +435,10 @@ impl SyncProvider for GoogleDriveProvider {
     fn download(&mut self, file: &RemoteFile) -> Result<Vec<u8>> {
         let id = file.id.clone().ok_or_else(|| Error::Other("drive file without id".into()))?;
         let resp = ureq::get(&format!("https://www.googleapis.com/drive/v3/files/{id}?alt=media"))
-            .set("Authorization", &format!("Bearer {}", self.token))
+            .header("Authorization", &format!("Bearer {}", self.token))
             .call()
             .map_err(|e| Error::Other(format!("drive download: {e}")))?;
-        let mut buf = vec![];
-        resp.into_reader().read_to_end(&mut buf)?;
-        Ok(buf)
+        bytes_body(resp)
     }
     fn upload(&mut self, path: &str, bytes: &[u8], modified: u64) -> Result<()> {
         let (dir, name) = match path.rsplit_once('/') {
@@ -441,13 +449,13 @@ impl SyncProvider for GoogleDriveProvider {
         let existing = self.query(&format!("name = '{}' and '{}' in parents and trashed = false", name.replace('\'', "\\'"), parent))?;
         let stamp = unix_to_rfc3339(modified);
         if let Some(id) = existing.first().and_then(|f| f.get("id")).and_then(Value::as_str) {
-            ureq::request("PATCH", &format!("https://www.googleapis.com/upload/drive/v3/files/{id}?uploadType=media"))
-                .set("Authorization", &format!("Bearer {}", self.token))
-                .set("Content-Type", "application/octet-stream")
-                .send_bytes(bytes)
+            ureq::patch(&format!("https://www.googleapis.com/upload/drive/v3/files/{id}?uploadType=media"))
+                .header("Authorization", &format!("Bearer {}", self.token))
+                .header("Content-Type", "application/octet-stream")
+                .send(bytes)
                 .map_err(|e| Error::Other(format!("drive update: {e}")))?;
-            ureq::request("PATCH", &format!("https://www.googleapis.com/drive/v3/files/{id}"))
-                .set("Authorization", &format!("Bearer {}", self.token))
+            ureq::patch(&format!("https://www.googleapis.com/drive/v3/files/{id}"))
+                .header("Authorization", &format!("Bearer {}", self.token))
                 .send_json(json!({"modifiedTime": stamp}))
                 .map_err(|e| Error::Other(format!("drive touch: {e}")))?;
         } else {
@@ -458,9 +466,9 @@ impl SyncProvider for GoogleDriveProvider {
             body.extend_from_slice(bytes);
             body.extend_from_slice(format!("\r\n--{boundary}--").as_bytes());
             ureq::post("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id")
-                .set("Authorization", &format!("Bearer {}", self.token))
-                .set("Content-Type", &format!("multipart/related; boundary={boundary}"))
-                .send_bytes(&body)
+                .header("Authorization", &format!("Bearer {}", self.token))
+                .header("Content-Type", &format!("multipart/related; boundary={boundary}"))
+                .send(&body)
                 .map_err(|e| Error::Other(format!("drive create: {e}")))?;
         }
         Ok(())
@@ -482,8 +490,8 @@ impl OneDriveProvider {
         format!("https://graph.microsoft.com/v1.0/me/drive/root:/{enc}")
     }
     fn get(&self, url: &str) -> Result<Value> {
-        let resp = ureq::get(url).set("Authorization", &format!("Bearer {}", self.token)).call().map_err(|e| Error::Other(format!("onedrive: {e}")))?;
-        resp.into_json().map_err(|e| Error::Other(e.to_string()))
+        let resp = ureq::get(url).header("Authorization", &format!("Bearer {}", self.token)).call().map_err(|e| Error::Other(format!("onedrive: {e}")))?;
+        json_body(resp)
     }
     fn walk(&self, rel: &str, out: &mut Vec<RemoteFile>) -> Result<()> {
         let mut url = format!("{}:/children?$top=500", self.item_url(rel));
@@ -532,28 +540,26 @@ impl SyncProvider for OneDriveProvider {
     }
     fn download(&mut self, file: &RemoteFile) -> Result<Vec<u8>> {
         let resp = ureq::get(&format!("{}:/content", self.item_url(&file.path)))
-            .set("Authorization", &format!("Bearer {}", self.token))
+            .header("Authorization", &format!("Bearer {}", self.token))
             .call()
             .map_err(|e| Error::Other(format!("onedrive download: {e}")))?;
-        let mut buf = vec![];
-        resp.into_reader().read_to_end(&mut buf)?;
-        Ok(buf)
+        bytes_body(resp)
     }
     fn upload(&mut self, path: &str, bytes: &[u8], modified: u64) -> Result<()> {
         let stamp = unix_to_rfc3339(modified);
         if bytes.len() < 4 * 1024 * 1024 {
             ureq::put(&format!("{}:/content", self.item_url(path)))
-                .set("Authorization", &format!("Bearer {}", self.token))
-                .set("Content-Type", "application/octet-stream")
-                .send_bytes(bytes)
+                .header("Authorization", &format!("Bearer {}", self.token))
+                .header("Content-Type", "application/octet-stream")
+                .send(bytes)
                 .map_err(|e| Error::Other(format!("onedrive upload: {e}")))?;
         } else {
-            let session: Value = ureq::post(&format!("{}:/createUploadSession", self.item_url(path)))
-                .set("Authorization", &format!("Bearer {}", self.token))
-                .send_json(json!({"item": {"@microsoft.graph.conflictBehavior": "replace"}}))
-                .map_err(|e| Error::Other(format!("onedrive session: {e}")))?
-                .into_json()
-                .map_err(|e| Error::Other(e.to_string()))?;
+            let session: Value = json_body(
+                ureq::post(&format!("{}:/createUploadSession", self.item_url(path)))
+                    .header("Authorization", &format!("Bearer {}", self.token))
+                    .send_json(json!({"item": {"@microsoft.graph.conflictBehavior": "replace"}}))
+                    .map_err(|e| Error::Other(format!("onedrive session: {e}")))?,
+            )?;
             let upload_url = session.get("uploadUrl").and_then(Value::as_str).ok_or_else(|| Error::Other("onedrive: no uploadUrl".into()))?.to_string();
             const CHUNK: usize = 10 * 320 * 1024;
             let total = bytes.len();
@@ -561,14 +567,14 @@ impl SyncProvider for OneDriveProvider {
             while off < total {
                 let end = (off + CHUNK).min(total);
                 ureq::put(&upload_url)
-                    .set("Content-Range", &format!("bytes {}-{}/{}", off, end - 1, total))
-                    .send_bytes(&bytes[off..end])
+                    .header("Content-Range", &format!("bytes {}-{}/{}", off, end - 1, total))
+                    .send(&bytes[off..end])
                     .map_err(|e| Error::Other(format!("onedrive chunk: {e}")))?;
                 off = end;
             }
         }
-        let _ = ureq::request("PATCH", &self.item_url(path))
-            .set("Authorization", &format!("Bearer {}", self.token))
+        let _ = ureq::patch(&self.item_url(path))
+            .header("Authorization", &format!("Bearer {}", self.token))
             .send_json(json!({"fileSystemInfo": {"lastModifiedDateTime": stamp}}));
         Ok(())
     }
