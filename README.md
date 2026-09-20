@@ -47,6 +47,8 @@ this repository for the full desktop app.
 Build it locally with `npm run build:lite` (needs `rustup target add wasm32-unknown-unknown`);
 `npm run dev:lite` serves it on :5179 once `lite/public/songbook.wasm` exists.
 
+![Songbook Lite in Safari: MixPad's SQ-7 show on the I/O tab, parsed by the Rust core in WebAssembly](docs/screenshots/lite-io.png)
+
 ## Running the desktop app
 
 ```bash
