@@ -25,5 +25,18 @@
     -->
     <script src="/about-data.js" defer></script>
     <script src="/about.js" defer></script>
+    <!--
+      The fleet's support footer (vendored by stoatworks-backend/scripts/
+      sync-support-footer.sh into lite/public — edit it there). Its feedback
+      button posts to intake.stoatworks-labs.com, which _headers allows in
+      connect-src.
+    -->
+    <script
+      src="/support-footer.js"
+      defer
+      data-app="Songbook Lite"
+      data-repo="https://github.com/stoatworks-labs/songbook"
+      data-note="Everything runs in your browser: the show files you open stay on your machine, in this browser's own storage."
+    ></script>
   </body>
 </html>
