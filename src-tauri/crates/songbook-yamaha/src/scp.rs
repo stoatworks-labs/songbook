@@ -1094,7 +1094,7 @@ pub mod fake {
                         Some("productname") => format!("OK devinfo productname {}", quote(&st.product)),
                         Some("version") => "OK devinfo version \"V3.00\"".into(),
                         Some("devicename") => "OK devinfo devicename \"Y001-Yamaha-DM3\"".into(),
-                        _ => format!("ERROR devinfo InvalidArgument"),
+                        _ => "ERROR devinfo InvalidArgument".to_string(),
                     },
                     Some("prmnum") if serve_dictionary => format!("OK prmnum {}", dict_lines.len()),
                     Some("prminfo") if serve_dictionary => {

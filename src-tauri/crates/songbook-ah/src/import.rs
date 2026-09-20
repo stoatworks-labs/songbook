@@ -9,7 +9,7 @@ use std::collections::BTreeMap;
 use std::io::Read;
 use std::path::Path;
 
-use songbook_model::{build, ids, BusKind, Channel, ChannelKind, Direction, NoteLevel, Platform, Show, SocketKind, Unit, UnitRole};
+use songbook_model::{build, ids, BusKind, Channel, ChannelKind, Direction, NoteLevel, Platform, Show, SocketKind, UnitRole};
 
 use crate::{dlive, sq};
 
@@ -119,26 +119,35 @@ pub fn import_sq_files(name: &str, files: SqFiles, platform: Option<Platform>) -
         _ => Platform::AhSq,
     };
     let mut show = sq_skeleton(name, platform, "SQ");
-    let patch = sq::nvdata_patch(nv);
+    let patch = sq::input_patch(nv);
     if patch.is_empty() {
         show.note(NoteLevel::Info, "channels", "no input channel records were found in NVDATA.DAT, so the input patch is unknown");
     }
-    let max_socket = patch.iter().filter_map(|p| p.socket).max().unwrap_or(0).max(1);
-    ensure_input_sockets(&mut show, max_socket);
+    let mut unseen_classes = std::collections::BTreeSet::new();
     for p in &patch {
+        if let Some(sk) = p.socket {
+            ensure_sq_socket(&mut show, sk);
+            if ![sq::CLASS_LOCAL, sq::CLASS_USB].contains(&sk.class) {
+                unseen_classes.insert(sk.class);
+            }
+        }
         if let Some(ch) = show.channels.iter_mut().find(|c| c.kind == ChannelKind::Input && c.number == p.channel) {
-            ch.source = p.socket.map(sq::socket_id);
+            ch.source = p.socket.map(|sk| sk.id());
         }
     }
     show.note(
         NoteLevel::Info,
         "channels",
         format!(
-            "input patch read for Ip1–Ip{} from NVDATA.DAT; the patch byte is a socket number whose class (Local / SLink / USB / I/O port) is not encoded where it was found, and only a Local patch has been observed, so the sockets are labelled as input sockets rather than Local",
+            "input patch read for Ip1–Ip{} from NVDATA.DAT: the record's class byte is 1 Local, 3 USB (both seen in MixPad's default show), 2 SLink and 4 I/O Port by MixPad's tab order; Local 49–54 are labelled as the stereo TRS pairs ST1–ST3 because that is where the default show patches Ip41–46",
             patch.len()
         ),
     );
+    if !unseen_classes.is_empty() {
+        show.note(NoteLevel::Info, "channels", format!("socket class(es) {:?} in the patch have not been seen in a file before; their names follow MixPad's tab order (2 SLink, 4 I/O Port) and should be checked on the desk", unseen_classes));
+    }
     show.note(NoteLevel::Info, "channels", "channel names, colours, preamps, processing and the mix are not decoded from SQ show files yet; pull the show from the desk over MIDI/TCP to read mutes, levels, pans and assignments");
+    show.note(NoteLevel::Info, "vendor", "the input patch and the scene names can be written back into a copy of this show's images (Vendor files tab); everything else in them is carried over unchanged");
 
     // Scenes.
     let mut scene_files: Vec<(u32, &Vec<u8>)> = files
@@ -149,11 +158,13 @@ pub fn import_sq_files(name: &str, files: SqFiles, platform: Option<Platform>) -
         })
         .collect();
     scene_files.sort_by_key(|(n, _)| *n);
-    for (n, d) in &scene_files {
+    for (file_index, d) in &scene_files {
+        let n = sq::scene_number_of_file(*file_index);
         let label = sq::scene_name(d);
         let label = if label.is_empty() { format!("Scene {n}") } else { label };
-        let mut sc = build::scene(*n, &label);
-        sc.notes = "contents not decoded: an SQ scene image holds the whole mix, but only its name is read".into();
+        let mut sc = build::scene(n, &label);
+        sc.notes = "contents not decoded: an SQ scene image holds the whole mix (including the input patch it was stored with), but only its name is read".into();
+        sc.extra.insert("sqFile".into(), serde_json::json!(format!("SCENE{file_index:03}.DAT")));
         show.scenes.push(sc);
     }
 
@@ -219,22 +230,24 @@ pub fn sq_skeleton(name: &str, platform: Platform, model: &str) -> Show {
     show
 }
 
-fn ensure_input_sockets(show: &mut Show, up_to: u32) {
-    if show.unit("unit:input").is_none() {
-        show.system.units.push(Unit {
-            id: ids::unit("input"),
-            label: "Input sockets (class not decoded)".into(),
-            model: String::new(),
-            role: UnitRole::Console,
-            address: None,
-            extra: Default::default(),
-        });
+/// Make sure the socket an image's patch names exists in the show.
+fn ensure_sq_socket(show: &mut Show, sk: sq::PatchSocket) {
+    let unit = sk.unit();
+    let unit_id = ids::unit(&unit);
+    if show.unit(&unit_id).is_none() {
+        let (label, role) = match sk.class {
+            sq::CLASS_LOCAL => ("Local sockets", UnitRole::Console),
+            sq::CLASS_SLINK => ("SLink", UnitRole::Network),
+            sq::CLASS_USB => ("USB-B audio", UnitRole::Internal),
+            sq::CLASS_IO_PORT => ("I/O Port", UnitRole::Card),
+            _ => ("Unknown socket class", UnitRole::Internal),
+        };
+        show.system.units.push(build::unit(&unit, label, "", role));
     }
-    for n in 1..=up_to {
-        let id = sq::socket_id(n);
-        if show.socket(&id).is_none() {
-            show.sockets.push(build::socket("input", Direction::In, n, SocketKind::Mic, &format!("Input socket {n}")));
-        }
+    let id = sk.id();
+    if show.socket(&id).is_none() {
+        show.sockets.push(build::socket(&unit, Direction::In, sk.index, sk.kind(), &sk.label()));
+        show.sockets.sort_by_key(|a| (a.unit_id.clone(), a.direction as u8, a.index));
     }
 }
 
@@ -408,6 +421,55 @@ fn stereo_offset(show: &Show, kind: BusKind) -> u32 {
     show.buses.iter().filter(|b| b.kind == kind && !b.stereo).count() as u32
 }
 
+/// Synthetic images for the crate's tests.
+#[cfg(test)]
+pub mod tests_support {
+    use super::*;
+
+    fn image(kind: u8) -> Vec<u8> {
+        let mut d = vec![0u8; sq::IMAGE_LEN];
+        d[0] = kind;
+        d[2] = 0xFE;
+        for b in &mut d[3..12] {
+            *b = 0xFF;
+        }
+        d[0x0C..0x10].copy_from_slice(&[0x01, 0x06, 0x00, 0x01]);
+        d
+    }
+
+    /// `NVDATA.DAT` in MixPad's default SQ-7 layout (Ip3 → Local 10), plus
+    /// `SCENE001.DAT` and `SCENE003.DAT` (scenes 2 and 4); every image
+    /// carries a valid checksum and the scenes carry the same patch.
+    pub fn synthetic_sq_show() -> SqFiles {
+        let mut nv = image(0xB5);
+        for i in 0..48usize {
+            let at = 0x38C + i * 336;
+            nv[at - 3..at].copy_from_slice(&[0xFF, 0xFF, 0xFF]);
+            let (idx, class) = match i {
+                2 => (9, sq::CLASS_LOCAL),
+                0..=31 => (i as u8, sq::CLASS_LOCAL),
+                32..=39 => (0, 0),
+                40..=45 => (48 + (i - 40) as u8, sq::CLASS_LOCAL),
+                _ => ((i - 46) as u8, sq::CLASS_USB),
+            };
+            nv[at] = idx;
+            nv[at + 2] = class;
+            nv[at + 3] = 0xFE;
+        }
+        sq::fix_image_checksum(&mut nv);
+        let mut files = SqFiles::new();
+        for (n, name) in [(1u32, "Line check"), (3, "Soundch")] {
+            let mut sc = nv.clone();
+            sc[0] = 0xA1;
+            sc[0x14..0x14 + name.len()].copy_from_slice(name.as_bytes());
+            sq::fix_image_checksum(&mut sc);
+            files.insert(format!("SCENE{n:03}.DAT"), sc);
+        }
+        files.insert("NVDATA.DAT".into(), nv);
+        files
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -467,11 +529,18 @@ mod tests {
             d
         }
         let mut nv = image(0xB5);
-        for i in 0..40usize {
+        for i in 0..48usize {
             let at = 0x38C + i * 336;
             nv[at - 3..at].copy_from_slice(&[0xFF, 0xFF, 0xFF]);
-            nv[at] = if i == 2 { 9 } else { i as u8 };
-            nv[at + 2] = u8::from(i != 39);
+            let (idx, class) = match i {
+                2 => (9, sq::CLASS_LOCAL),
+                0..=31 => (i as u8, sq::CLASS_LOCAL),
+                32..=39 => (0, 0),
+                40..=45 => (48 + (i - 40) as u8, sq::CLASS_LOCAL),
+                _ => ((i - 46) as u8, sq::CLASS_USB),
+            };
+            nv[at] = idx;
+            nv[at + 2] = class;
             nv[at + 3] = 0xFE;
         }
         let mut sc = image(0xA1);
@@ -484,11 +553,13 @@ mod tests {
         let show = r.show;
         assert_eq!(show.platform, Platform::AhSq);
         assert_eq!(show.channels.iter().filter(|c| c.kind == ChannelKind::Input).count(), 48);
-        assert_eq!(show.channels[2].source.as_deref(), Some("skt:input:in:10"));
+        assert_eq!(show.channels[2].source.as_deref(), Some("skt:local:in:10"));
         assert_eq!(show.channels[39].source, None);
-        assert_eq!(show.channels[40].source, None);
+        assert_eq!(show.channels[40].source.as_deref(), Some("skt:local:in:49"));
+        assert_eq!(show.socket("skt:local:in:49").unwrap().label, "ST1 L");
+        assert_eq!(show.channels[46].source.as_deref(), Some("skt:usb:in:1"));
         assert_eq!(show.scenes.len(), 1);
-        assert_eq!(show.scenes[0].number, Some(3));
+        assert_eq!(show.scenes[0].number, Some(4), "SCENE003.DAT is scene 4: the file index is 0-based");
         assert_eq!(show.scenes[0].label, "Soundch");
         assert_eq!(show.buses_of(BusKind::Aux).count(), 12);
         assert!(show.validate().is_empty(), "{:?}", show.validate());
@@ -496,7 +567,7 @@ mod tests {
         assert!(vname.ends_with(".sq-show.zip"));
         // And the zip imports again.
         let again = import_bytes(&vname, &vbytes, None).unwrap();
-        assert_eq!(again.show.channels[2].source.as_deref(), Some("skt:input:in:10"));
+        assert_eq!(again.show.channels[2].source.as_deref(), Some("skt:local:in:10"));
     }
 
     /// Against a real Director export, when one is on this machine.

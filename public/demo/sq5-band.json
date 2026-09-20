@@ -8,8 +8,8 @@
       "festival",
       "band"
     ],
-    "created": "2026-09-19T20:28:29Z",
-    "modified": "2026-09-19T20:28:29Z"
+    "created": "2026-09-20T01:07:24Z",
+    "modified": "2026-09-20T01:07:24Z"
   },
   "platform": "ah-sq",
   "system": {
@@ -34,12 +34,6 @@
         "label": "USB-B audio",
         "model": "USB",
         "role": "internal"
-      },
-      {
-        "id": "unit:input",
-        "label": "Input sockets",
-        "model": "",
-        "role": "console"
       }
     ]
   },
@@ -269,327 +263,199 @@
       "label": "Out 12"
     },
     {
-      "id": "skt:input:in:1",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 1,
-      "label": "Input socket 1"
-    },
-    {
-      "id": "skt:input:in:2",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 2,
-      "label": "Input socket 2"
-    },
-    {
-      "id": "skt:input:in:3",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 3,
-      "label": "Input socket 3"
-    },
-    {
-      "id": "skt:input:in:4",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 4,
-      "label": "Input socket 4"
-    },
-    {
-      "id": "skt:input:in:5",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 5,
-      "label": "Input socket 5"
-    },
-    {
-      "id": "skt:input:in:6",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 6,
-      "label": "Input socket 6"
-    },
-    {
-      "id": "skt:input:in:7",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 7,
-      "label": "Input socket 7"
-    },
-    {
-      "id": "skt:input:in:8",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 8,
-      "label": "Input socket 8"
-    },
-    {
-      "id": "skt:input:in:9",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 9,
-      "label": "Input socket 9"
-    },
-    {
-      "id": "skt:input:in:10",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 10,
-      "label": "Input socket 10"
-    },
-    {
-      "id": "skt:input:in:11",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 11,
-      "label": "Input socket 11"
-    },
-    {
-      "id": "skt:input:in:12",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 12,
-      "label": "Input socket 12"
-    },
-    {
-      "id": "skt:input:in:13",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 13,
-      "label": "Input socket 13"
-    },
-    {
-      "id": "skt:input:in:14",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 14,
-      "label": "Input socket 14"
-    },
-    {
-      "id": "skt:input:in:15",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 15,
-      "label": "Input socket 15"
-    },
-    {
-      "id": "skt:input:in:16",
-      "unitId": "unit:input",
-      "kind": "mic",
-      "direction": "in",
-      "index": 16,
-      "label": "Input socket 16"
-    },
-    {
-      "id": "skt:input:in:17",
-      "unitId": "unit:input",
-      "kind": "mic",
+      "id": "skt:local:in:17",
+      "unitId": "unit:local",
+      "kind": "line",
       "direction": "in",
       "index": 17,
-      "label": "Input socket 17"
+      "label": "Local 17"
     },
     {
-      "id": "skt:input:in:18",
-      "unitId": "unit:input",
-      "kind": "mic",
+      "id": "skt:local:in:18",
+      "unitId": "unit:local",
+      "kind": "line",
       "direction": "in",
       "index": 18,
-      "label": "Input socket 18"
+      "label": "Local 18"
     },
     {
-      "id": "skt:input:in:19",
-      "unitId": "unit:input",
-      "kind": "mic",
+      "id": "skt:local:in:19",
+      "unitId": "unit:local",
+      "kind": "line",
       "direction": "in",
       "index": 19,
-      "label": "Input socket 19"
+      "label": "Local 19"
     },
     {
-      "id": "skt:input:in:20",
-      "unitId": "unit:input",
-      "kind": "mic",
+      "id": "skt:local:in:20",
+      "unitId": "unit:local",
+      "kind": "line",
       "direction": "in",
       "index": 20,
-      "label": "Input socket 20"
+      "label": "Local 20"
     },
     {
-      "id": "skt:input:in:21",
-      "unitId": "unit:input",
-      "kind": "mic",
+      "id": "skt:local:in:21",
+      "unitId": "unit:local",
+      "kind": "line",
       "direction": "in",
       "index": 21,
-      "label": "Input socket 21"
+      "label": "Local 21"
     },
     {
-      "id": "skt:input:in:22",
-      "unitId": "unit:input",
-      "kind": "mic",
+      "id": "skt:local:in:22",
+      "unitId": "unit:local",
+      "kind": "line",
       "direction": "in",
       "index": 22,
-      "label": "Input socket 22"
+      "label": "Local 22"
     },
     {
-      "id": "skt:input:in:23",
-      "unitId": "unit:input",
-      "kind": "mic",
+      "id": "skt:local:in:23",
+      "unitId": "unit:local",
+      "kind": "line",
       "direction": "in",
       "index": 23,
-      "label": "Input socket 23"
+      "label": "Local 23"
     },
     {
-      "id": "skt:input:in:24",
-      "unitId": "unit:input",
-      "kind": "mic",
+      "id": "skt:local:in:24",
+      "unitId": "unit:local",
+      "kind": "line",
       "direction": "in",
       "index": 24,
-      "label": "Input socket 24"
+      "label": "Local 24"
     }
   ],
   "preamps": [
     {
-      "socketId": "skt:input:in:1",
+      "socketId": "skt:local:in:1",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:2",
+      "socketId": "skt:local:in:2",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:3",
+      "socketId": "skt:local:in:3",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:4",
+      "socketId": "skt:local:in:4",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:5",
+      "socketId": "skt:local:in:5",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:6",
+      "socketId": "skt:local:in:6",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:7",
+      "socketId": "skt:local:in:7",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:8",
+      "socketId": "skt:local:in:8",
       "gainDb": 30.0,
       "pad": false,
       "phantom": true
     },
     {
-      "socketId": "skt:input:in:9",
+      "socketId": "skt:local:in:9",
       "gainDb": 30.0,
       "pad": false,
       "phantom": true
     },
     {
-      "socketId": "skt:input:in:10",
+      "socketId": "skt:local:in:10",
       "gainDb": 18.0,
       "pad": false,
       "phantom": true
     },
     {
-      "socketId": "skt:input:in:11",
+      "socketId": "skt:local:in:11",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:12",
+      "socketId": "skt:local:in:12",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:13",
+      "socketId": "skt:local:in:13",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:14",
+      "socketId": "skt:local:in:14",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:15",
+      "socketId": "skt:local:in:15",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:16",
+      "socketId": "skt:local:in:16",
       "gainDb": 38.0,
       "pad": false,
       "phantom": true
     },
     {
-      "socketId": "skt:input:in:17",
+      "socketId": "skt:local:in:17",
       "gainDb": 38.0,
       "pad": false,
       "phantom": true
     },
     {
-      "socketId": "skt:input:in:18",
+      "socketId": "skt:local:in:18",
       "gainDb": 38.0,
       "pad": false,
       "phantom": true
     },
     {
-      "socketId": "skt:input:in:19",
+      "socketId": "skt:local:in:19",
       "gainDb": 26.0,
       "pad": false,
       "phantom": true
     },
     {
-      "socketId": "skt:input:in:20",
+      "socketId": "skt:local:in:20",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:21",
+      "socketId": "skt:local:in:21",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
     },
     {
-      "socketId": "skt:input:in:22",
+      "socketId": "skt:local:in:22",
       "gainDb": 26.0,
       "pad": false,
       "phantom": false
@@ -603,7 +469,7 @@
       "label": "Kick In",
       "color": "red",
       "stereo": false,
-      "source": "skt:input:in:1",
+      "source": "skt:local:in:1",
       "strip": {
         "faderDb": -6.0,
         "on": true,
@@ -698,7 +564,7 @@
       "label": "Kick Out",
       "color": "red",
       "stereo": false,
-      "source": "skt:input:in:2",
+      "source": "skt:local:in:2",
       "strip": {
         "faderDb": -8.0,
         "on": true,
@@ -793,7 +659,7 @@
       "label": "Snare Tp",
       "color": "red",
       "stereo": false,
-      "source": "skt:input:in:3",
+      "source": "skt:local:in:3",
       "strip": {
         "faderDb": -4.0,
         "on": true,
@@ -894,7 +760,7 @@
       "label": "Snare Bt",
       "color": "red",
       "stereo": false,
-      "source": "skt:input:in:4",
+      "source": "skt:local:in:4",
       "strip": {
         "faderDb": -12.0,
         "on": true,
@@ -995,7 +861,7 @@
       "label": "Hat",
       "color": "red",
       "stereo": false,
-      "source": "skt:input:in:5",
+      "source": "skt:local:in:5",
       "strip": {
         "faderDb": -10.0,
         "on": true,
@@ -1090,7 +956,7 @@
       "label": "Rack",
       "color": "red",
       "stereo": false,
-      "source": "skt:input:in:6",
+      "source": "skt:local:in:6",
       "strip": {
         "faderDb": -9.0,
         "on": true,
@@ -1185,7 +1051,7 @@
       "label": "Floor",
       "color": "red",
       "stereo": false,
-      "source": "skt:input:in:7",
+      "source": "skt:local:in:7",
       "strip": {
         "faderDb": -7.0,
         "on": true,
@@ -1280,7 +1146,7 @@
       "label": "OH L",
       "color": "red",
       "stereo": false,
-      "source": "skt:input:in:8",
+      "source": "skt:local:in:8",
       "strip": {
         "faderDb": -8.0,
         "on": true,
@@ -1375,7 +1241,7 @@
       "label": "OH R",
       "color": "red",
       "stereo": false,
-      "source": "skt:input:in:9",
+      "source": "skt:local:in:9",
       "strip": {
         "faderDb": -8.0,
         "on": true,
@@ -1470,7 +1336,7 @@
       "label": "Bass DI",
       "color": "purple",
       "stereo": false,
-      "source": "skt:input:in:10",
+      "source": "skt:local:in:10",
       "strip": {
         "faderDb": -3.0,
         "on": true,
@@ -1565,7 +1431,7 @@
       "label": "Bass Mic",
       "color": "purple",
       "stereo": false,
-      "source": "skt:input:in:11",
+      "source": "skt:local:in:11",
       "strip": {
         "faderDb": -12.0,
         "on": true,
@@ -1660,7 +1526,7 @@
       "label": "Gtr L",
       "color": "yellow",
       "stereo": false,
-      "source": "skt:input:in:12",
+      "source": "skt:local:in:12",
       "strip": {
         "faderDb": -6.0,
         "on": true,
@@ -1755,7 +1621,7 @@
       "label": "Gtr R",
       "color": "yellow",
       "stereo": false,
-      "source": "skt:input:in:13",
+      "source": "skt:local:in:13",
       "strip": {
         "faderDb": -6.0,
         "on": true,
@@ -1850,7 +1716,7 @@
       "label": "Keys L",
       "color": "blue",
       "stereo": false,
-      "source": "skt:input:in:14",
+      "source": "skt:local:in:14",
       "strip": {
         "faderDb": -10.0,
         "on": true,
@@ -1945,7 +1811,7 @@
       "label": "Keys R",
       "color": "blue",
       "stereo": false,
-      "source": "skt:input:in:15",
+      "source": "skt:local:in:15",
       "strip": {
         "faderDb": -10.0,
         "on": true,
@@ -2040,7 +1906,7 @@
       "label": "Vox Lead",
       "color": "green",
       "stereo": false,
-      "source": "skt:input:in:16",
+      "source": "skt:local:in:16",
       "strip": {
         "faderDb": 0.0,
         "on": true,
@@ -2149,7 +2015,7 @@
       "label": "Vox BV1",
       "color": "green",
       "stereo": false,
-      "source": "skt:input:in:17",
+      "source": "skt:local:in:17",
       "strip": {
         "faderDb": -3.0,
         "on": true,
@@ -2258,7 +2124,7 @@
       "label": "Vox BV2",
       "color": "green",
       "stereo": false,
-      "source": "skt:input:in:18",
+      "source": "skt:local:in:18",
       "strip": {
         "faderDb": -3.0,
         "on": true,
@@ -2367,7 +2233,7 @@
       "label": "Acoustic",
       "color": "yellow",
       "stereo": false,
-      "source": "skt:input:in:19",
+      "source": "skt:local:in:19",
       "strip": {
         "faderDb": -8.0,
         "on": true,
@@ -2462,7 +2328,7 @@
       "label": "Talkback",
       "color": "white",
       "stereo": false,
-      "source": "skt:input:in:20",
+      "source": "skt:local:in:20",
       "strip": {
         "faderDb": -144.0,
         "on": false,
@@ -2554,7 +2420,7 @@
       "kind": "input",
       "label": "Spare 1",
       "stereo": false,
-      "source": "skt:input:in:21",
+      "source": "skt:local:in:21",
       "strip": {
         "faderDb": -144.0,
         "on": false,
@@ -2646,7 +2512,7 @@
       "kind": "input",
       "label": "Spare 2",
       "stereo": false,
-      "source": "skt:input:in:22",
+      "source": "skt:local:in:22",
       "strip": {
         "faderDb": -144.0,
         "on": false,

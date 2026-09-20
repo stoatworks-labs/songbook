@@ -29,7 +29,7 @@
 //! plus `0x20:00`. Everything here was checked against the worked examples in
 //! the document; it has not yet been checked against a desk.
 
-use songbook_model::{ids, BusKind, Direction, FADER_OFF};
+use songbook_model::{ids, BusKind, Direction, SocketKind, FADER_OFF};
 
 use crate::midi::param14;
 
@@ -39,9 +39,13 @@ pub const IMAGE_LEN: usize = 131_072;
 const CHANNEL_STRIDE: usize = 336;
 /// Input channels on every SQ.
 pub const INPUT_CHANNELS: usize = 48;
-/// The number the input-channel record run holds on a default SQ-7 (Ip1–Ip40
-/// before stereo inputs and mixes continue at the same stride).
-const PATCH_RECORDS: usize = 40;
+/// The input-channel records at the head of the 122-record strip table
+/// (Ip1–Ip48; the stereo inputs, FX returns and the rest follow at the same
+/// stride with other class codes).
+const PATCH_RECORDS: usize = INPUT_CHANNELS;
+/// The scene name field at 0x14 is sixteen bytes: MixPad rewrote a longer
+/// name as its first sixteen characters and zeros (2026-09-20).
+pub const SCENE_NAME_LEN: usize = 16;
 
 /// What a MixPad or console image is, from its first byte.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -62,20 +66,99 @@ pub fn image_kind(d: &[u8]) -> ImageKind {
     }
 }
 
-/// The scene name a `SCENEnnn.DAT` carries at 0x14.
+/// The scene name a `SCENEnnn.DAT` carries at 0x14 (sixteen bytes).
 pub fn scene_name(d: &[u8]) -> String {
-    let s = &d[0x14..(0x14 + 32).min(d.len())];
+    let s = &d[0x14..(0x14 + SCENE_NAME_LEN).min(d.len())];
     let end = s.iter().position(|&b| b == 0).unwrap_or(s.len());
     String::from_utf8_lossy(&s[..end]).trim().to_string()
 }
 
-/// One input channel's patch, from an NVDATA image.
+/// `SCENEnnn.DAT` is scene nnn + 1: MixPad lists `SCENE001.DAT` as scene 2
+/// and names a fresh store there "Scene 2" (2026-09-20).
+pub fn scene_number_of_file(file_index: u32) -> u32 {
+    file_index + 1
+}
+pub fn scene_file_name(scene_number: u32) -> String {
+    format!("SCENE{:03}.DAT", scene_number.saturating_sub(1))
+}
+
+/// A patched socket as an image spells it: a class byte and a 0-based index.
+///
+/// The class is byte +2 of the record and follows MixPad's I/O Patch tab
+/// order — 0 unpatched, 1 Local, 2 SLink, 3 USB, 4 I/O Port. Seen in the
+/// default SQ-7 show: Ip1–32 → Local 1–32, Ip41–46 → Local 49–54 (the
+/// three stereo TRS pairs, which the family numbers after 48 XLR slots),
+/// Ip47/48 → USB 1/2. SLink and I/O Port are the tab order, not yet seen
+/// in a file.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct PatchSocket {
+    pub class: u8,
+    /// 1-based within the class.
+    pub index: u32,
+}
+
+pub const CLASS_LOCAL: u8 = 1;
+pub const CLASS_SLINK: u8 = 2;
+pub const CLASS_USB: u8 = 3;
+pub const CLASS_IO_PORT: u8 = 4;
+/// The Local indices MixPad's default show gives the stereo TRS inputs.
+pub const LOCAL_STEREO_FIRST: u32 = 49;
+pub const LOCAL_STEREO_LAST: u32 = 54;
+
+impl PatchSocket {
+    /// The unit the socket belongs to, as the model names it.
+    pub fn unit(&self) -> String {
+        match self.class {
+            CLASS_LOCAL => "local".into(),
+            CLASS_SLINK => "slink".into(),
+            CLASS_USB => "usb".into(),
+            CLASS_IO_PORT => "ioport".into(),
+            k => format!("class{k}"),
+        }
+    }
+    pub fn id(&self) -> String {
+        ids::socket(&self.unit(), Direction::In, self.index)
+    }
+    pub fn label(&self) -> String {
+        match (self.class, self.index) {
+            (CLASS_LOCAL, n @ LOCAL_STEREO_FIRST..=LOCAL_STEREO_LAST) => format!("ST{} {}", (n - LOCAL_STEREO_FIRST) / 2 + 1, if (n - LOCAL_STEREO_FIRST).is_multiple_of(2) { "L" } else { "R" }),
+            (CLASS_LOCAL, n) => format!("Local {n}"),
+            (CLASS_SLINK, n) => format!("SLink {n}"),
+            (CLASS_USB, n) => format!("USB {n}"),
+            (CLASS_IO_PORT, n) => format!("I/O Port {n}"),
+            (k, n) => format!("Class {k} socket {n}"),
+        }
+    }
+    pub fn kind(&self) -> SocketKind {
+        match self.class {
+            CLASS_LOCAL if self.index >= LOCAL_STEREO_FIRST => SocketKind::Line,
+            CLASS_LOCAL => SocketKind::Mic,
+            CLASS_SLINK => SocketKind::SLink,
+            CLASS_USB => SocketKind::Usb,
+            CLASS_IO_PORT => SocketKind::Card,
+            _ => SocketKind::Other,
+        }
+    }
+    /// The class an ID's unit stands for, when it is one an image can hold.
+    pub fn from_unit(unit: &str, index: u32) -> Option<PatchSocket> {
+        let class = match unit.trim_start_matches("unit:") {
+            "local" => CLASS_LOCAL,
+            "slink" => CLASS_SLINK,
+            "usb" => CLASS_USB,
+            "ioport" => CLASS_IO_PORT,
+            u => u.strip_prefix("class")?.parse().ok()?,
+        };
+        (1..=256).contains(&index).then_some(PatchSocket { class, index })
+    }
+}
+
+/// One input channel's patch, from an NVDATA or scene image.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct InputPatchEntry {
     /// 1-based input channel.
     pub channel: u32,
-    /// 1-based socket number, when the channel is patched.
-    pub socket: Option<u32>,
+    /// The socket, when the channel is patched.
+    pub socket: Option<PatchSocket>,
 }
 
 /// Offsets of every input channel's patch byte: the longest run of records
@@ -109,16 +192,23 @@ fn patch_offsets(d: &[u8]) -> Vec<usize> {
     best
 }
 
-/// Read the input patch out of an NVDATA image.
-pub fn nvdata_patch(d: &[u8]) -> Vec<InputPatchEntry> {
+/// Read the input patch out of an NVDATA or scene image (both carry the
+/// same strip table; a scene stores the patch it was saved with).
+pub fn input_patch(d: &[u8]) -> Vec<InputPatchEntry> {
     patch_offsets(d)
         .iter()
         .enumerate()
         .map(|(i, &off)| {
-            let patched = d.get(off + 2).copied() == Some(0x01);
-            InputPatchEntry { channel: i as u32 + 1, socket: if patched { d.get(off).map(|&b| b as u32 + 1) } else { None } }
+            let class = d.get(off + 2).copied().unwrap_or(0);
+            let socket = (class != 0).then(|| PatchSocket { class, index: d[off] as u32 + 1 });
+            InputPatchEntry { channel: i as u32 + 1, socket }
         })
         .collect()
+}
+
+/// `input_patch`, by its older name.
+pub fn nvdata_patch(d: &[u8]) -> Vec<InputPatchEntry> {
+    input_patch(d)
 }
 
 // ---------------------------------------------------------------- the desk
@@ -321,11 +411,9 @@ pub fn value_to_pan(v: u16) -> f64 {
     ((v.min(16383) as f64 / 16383.0) * 2.0 - 1.0).clamp(-1.0, 1.0)
 }
 
-/// Where a socket number lands in the model: the SQ's input sockets are
-/// numbered across Local, then SLink, then USB, then the I/O port, but only
-/// the Local run has been observed in a file, so the class is left open.
+/// A Local socket's ID, the common case.
 pub fn socket_id(n: u32) -> String {
-    ids::socket("input", Direction::In, n)
+    PatchSocket { class: CLASS_LOCAL, index: n }.id()
 }
 
 #[cfg(test)]
@@ -425,14 +513,14 @@ mod tests {
 
     #[test]
     fn reads_the_patch_including_unpatched_channels() {
-        let mut p: Vec<(u8, bool)> = (0..40).map(|i| (i as u8, true)).collect();
+        let mut p: Vec<(u8, bool)> = (0..48).map(|i| (i as u8, true)).collect();
         p[2] = (9, true);
         p[39] = (39, false);
         let d = image(0xB5, &p);
         assert_eq!(image_kind(&d), ImageKind::Nvdata);
-        let patch = nvdata_patch(&d);
-        assert_eq!(patch.len(), 40);
-        assert_eq!(patch[2], InputPatchEntry { channel: 3, socket: Some(10) });
+        let patch = input_patch(&d);
+        assert_eq!(patch.len(), 48);
+        assert_eq!(patch[2], InputPatchEntry { channel: 3, socket: Some(PatchSocket { class: CLASS_LOCAL, index: 10 }) });
         assert_eq!(patch[39], InputPatchEntry { channel: 40, socket: None });
         let mut s = image(0xA1, &[]);
         s[0x14..0x1B].copy_from_slice(b"Scene 2");
@@ -446,5 +534,207 @@ mod tests {
         assert_eq!(model("SQ-7").name, "SQ-7");
         assert_eq!(model("sq6").name, "SQ-6");
         assert_eq!(model("").name, "SQ-5");
+    }
+}
+
+// ---------------------------------------------------------------- writing
+
+/// The image checksum: CRC-32 (the zlib one — reflected `0xEDB88320`, init
+/// and xor-out `0xFFFFFFFF`) over bytes `0x14..0x1fffc`, stored little-endian
+/// in the last four bytes. Identified on 2026-09-20 by matching two
+/// independent MixPad images (an NVDATA and a scene); the 20-byte header
+/// before `0x14` is outside it.
+pub const CRC_START: usize = 0x14;
+
+fn crc32(data: &[u8]) -> u32 {
+    let mut table = [0u32; 256];
+    for (n, slot) in table.iter_mut().enumerate() {
+        let mut c = n as u32;
+        for _ in 0..8 {
+            c = if c & 1 != 0 { 0xEDB8_8320 ^ (c >> 1) } else { c >> 1 };
+        }
+        *slot = c;
+    }
+    let mut crc = 0xFFFF_FFFFu32;
+    for &b in data {
+        crc = table[((crc ^ b as u32) & 0xFF) as usize] ^ (crc >> 8);
+    }
+    crc ^ 0xFFFF_FFFF
+}
+
+/// The checksum an image should carry.
+pub fn image_checksum(d: &[u8]) -> Option<u32> {
+    if d.len() != IMAGE_LEN {
+        return None;
+    }
+    Some(crc32(&d[CRC_START..IMAGE_LEN - 4]))
+}
+
+/// Whether the stored checksum matches the contents.
+pub fn image_checksum_ok(d: &[u8]) -> bool {
+    match image_checksum(d) {
+        Some(c) => u32::from_le_bytes([d[IMAGE_LEN - 4], d[IMAGE_LEN - 3], d[IMAGE_LEN - 2], d[IMAGE_LEN - 1]]) == c,
+        None => false,
+    }
+}
+
+/// Recompute and store the checksum.
+pub fn fix_image_checksum(d: &mut [u8]) {
+    if let Some(c) = image_checksum(d) {
+        d[IMAGE_LEN - 4..].copy_from_slice(&c.to_le_bytes());
+    }
+}
+
+/// Write an input patch into an NVDATA or scene image (`None` leaves the
+/// channel unpatched: class 0, index 0, as MixPad writes it). Channels the
+/// image has no record for are skipped. Returns the channels written.
+pub fn write_patch(d: &mut [u8], patch: &[InputPatchEntry]) -> Result<usize, String> {
+    if image_kind(d) == ImageKind::Unknown {
+        return Err("not an SQ image".into());
+    }
+    let offsets = patch_offsets(d);
+    let mut written = 0;
+    for p in patch {
+        let Some(&off) = offsets.get(p.channel as usize - 1) else { continue };
+        match p.socket {
+            Some(s) => {
+                if s.index == 0 || s.index > 256 {
+                    return Err(format!("Ip{}: socket index {} is out of range", p.channel, s.index));
+                }
+                d[off] = (s.index - 1) as u8;
+                d[off + 2] = s.class;
+            }
+            None => {
+                d[off] = 0x00;
+                d[off + 2] = 0x00;
+            }
+        }
+        written += 1;
+    }
+    fix_image_checksum(d);
+    Ok(written)
+}
+
+/// `write_patch`, by its older name.
+pub fn write_nvdata_patch(d: &mut [u8], patch: &[InputPatchEntry]) -> Result<usize, String> {
+    write_patch(d, patch)
+}
+
+/// Write a scene's name (ASCII, up to `SCENE_NAME_LEN` characters) into a
+/// scene image.
+pub fn write_scene_name(d: &mut [u8], name: &str) -> Result<(), String> {
+    if image_kind(d) != ImageKind::Scene {
+        return Err("not an SQ scene image".into());
+    }
+    let mut field = [0u8; SCENE_NAME_LEN];
+    for (i, c) in name.chars().filter(|c| c.is_ascii() && !c.is_ascii_control()).take(SCENE_NAME_LEN).enumerate() {
+        field[i] = c as u8;
+    }
+    d[0x14..0x14 + SCENE_NAME_LEN].copy_from_slice(&field);
+    fix_image_checksum(d);
+    Ok(())
+}
+
+#[cfg(test)]
+mod write_tests {
+    use super::*;
+
+    fn image(kind: u8) -> Vec<u8> {
+        let mut d = vec![0u8; IMAGE_LEN];
+        d[0] = kind;
+        d[2] = 0xFE;
+        for b in &mut d[3..12] {
+            *b = 0xFF;
+        }
+        d[0x0C..0x10].copy_from_slice(&[0x01, 0x06, 0x00, 0x01]);
+        // The default SQ-7 layout: Ip1–32 Local, 33–40 unpatched, 41–46 the
+        // stereo TRS pairs (Local 49–54), 47/48 USB 1/2.
+        for i in 0..48usize {
+            let at = 0x38C + i * CHANNEL_STRIDE;
+            d[at - 3..at].copy_from_slice(&[0xFF, 0xFF, 0xFF]);
+            let (idx, class) = match i {
+                0..=31 => (i as u8, CLASS_LOCAL),
+                32..=39 => (0, 0),
+                40..=45 => (48 + (i - 40) as u8, CLASS_LOCAL),
+                _ => ((i - 46) as u8, CLASS_USB),
+            };
+            d[at] = idx;
+            d[at + 2] = class;
+            d[at + 3] = 0xFE;
+        }
+        fix_image_checksum(&mut d);
+        d
+    }
+
+    #[test]
+    fn reads_the_default_show_layout() {
+        let p = input_patch(&image(0xB5));
+        assert_eq!(p.len(), 48);
+        assert_eq!(p[0].socket, Some(PatchSocket { class: CLASS_LOCAL, index: 1 }));
+        assert_eq!(p[32].socket, None);
+        assert_eq!(p[40].socket.unwrap().label(), "ST1 L");
+        assert_eq!(p[45].socket.unwrap().label(), "ST3 R");
+        assert_eq!(p[46].socket.unwrap().label(), "USB 1");
+        assert_eq!(p[46].socket.unwrap().id(), "skt:usb:in:1");
+        assert_eq!(p[47].socket.unwrap().id(), "skt:usb:in:2");
+        assert_eq!(PatchSocket::from_unit("unit:usb", 2), p[47].socket);
+        assert_eq!(scene_number_of_file(1), 2);
+        assert_eq!(scene_file_name(2), "SCENE001.DAT");
+    }
+
+    #[test]
+    fn crc_is_the_zlib_one() {
+        // Known answer: CRC-32 of "123456789" is 0xCBF43926.
+        assert_eq!(crc32(b"123456789"), 0xCBF4_3926);
+        let d = image(0xB5);
+        assert!(image_checksum_ok(&d));
+        let mut bad = d.clone();
+        bad[0x1000] ^= 1;
+        assert!(!image_checksum_ok(&bad));
+        // The header is outside the checksum.
+        let mut hdr = d.clone();
+        hdr[0x02] ^= 1;
+        assert!(image_checksum_ok(&hdr));
+    }
+
+    #[test]
+    fn writes_patch_and_scene_name_and_refreshes_the_checksum() {
+        let mut d = image(0xB5);
+        let local = |n| Some(PatchSocket { class: CLASS_LOCAL, index: n });
+        let n = write_patch(&mut d, &[InputPatchEntry { channel: 3, socket: local(10) }, InputPatchEntry { channel: 1, socket: None }, InputPatchEntry { channel: 48, socket: Some(PatchSocket { class: CLASS_SLINK, index: 7 }) }]).unwrap();
+        assert_eq!(n, 3);
+        assert!(image_checksum_ok(&d));
+        let p = input_patch(&d);
+        assert_eq!(p[2].socket, local(10));
+        assert_eq!(p[0].socket, None);
+        assert_eq!(d[0x38C], 0, "unpatched writes index 0 like MixPad");
+        assert_eq!(p[1].socket, local(2));
+        assert_eq!(p[47].socket.unwrap().id(), "skt:slink:in:7");
+        let mut s = image(0xA1);
+        write_scene_name(&mut s, "Songbook test scene name that is long").unwrap();
+        assert!(image_checksum_ok(&s));
+        assert_eq!(scene_name(&s), "Songbook test sc");
+        assert_eq!(&s[0x24..0x34], &[0u8; 16], "bytes after the 16-byte field are untouched");
+    }
+
+    /// MixPad's own images, when present: their stored checksum must be the
+    /// one this code computes.
+    #[test]
+    fn real_mixpad_images_if_present() {
+        let dir = std::path::PathBuf::from(std::env::var("HOME").unwrap_or_default()).join("Library/Application Support/Allen & Heath");
+        let Ok(rd) = std::fs::read_dir(&dir) else { return };
+        let mut checked = 0;
+        for e in rd.flatten() {
+            let show = e.path().join("CurrentShow");
+            let Ok(files) = std::fs::read_dir(&show) else { continue };
+            for f in files.flatten() {
+                let Ok(d) = std::fs::read(f.path()) else { continue };
+                if image_kind(&d) != ImageKind::Unknown {
+                    assert!(image_checksum_ok(&d), "{}", f.path().display());
+                    checked += 1;
+                }
+            }
+        }
+        eprintln!("checked {checked} MixPad images");
     }
 }

@@ -43,6 +43,21 @@ export interface PushOptions {
   preamps: boolean;
 }
 
+export interface VendorWriteReport {
+  files?: string[];
+  patchesWritten: number;
+  namesWritten?: number;
+  sceneNamesWritten?: number;
+  scenePatchesWritten?: number;
+  skipped: string[];
+}
+
+export interface VendorWriteResult {
+  path: string;
+  kind: string;
+  report: VendorWriteReport;
+}
+
 export interface ConvertResult {
   show: Show;
   notes: Note[];
@@ -74,6 +89,8 @@ const tauriApi = {
   importPath: (path: string, platform?: Platform) => invoke<ImportResult>('import_path', { path, platform: platform ?? null }),
   exportShowJson: (id: string, path: string) => invoke<void>('export_show_json', { id, path }),
   vendorExport: (id: string, sha256: string, path: string) => invoke<void>('vendor_export', { id, sha256, path }),
+  /** Write the show on screen into a copy of a kept vendor file (SQ show, CL/QL .CLF). */
+  vendorWrite: (show: Show, sha256: string, path: string) => invoke<VendorWriteResult>('vendor_write', { show, sha256, path }),
   writeFile: (path: string, base64: string) => invoke<void>('write_file', { path, base64 }),
   writeText: (path: string, text: string) => invoke<void>('write_text', { path, text }),
   readText: (path: string) => invoke<string>('read_text', { path }),

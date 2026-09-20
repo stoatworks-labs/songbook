@@ -763,3 +763,10 @@ textarea {
 .side.wide .panel {
   overflow-x: auto;
 }
+
+.row-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  white-space: nowrap;
+}

@@ -71,8 +71,10 @@ src-tauri/examples/demo.rs          writes public/demo/*.json; seed.rs imports f
   blanked), keeps a gzip'd snapshot per distinct hash, appends to `history/index.json`. Saving
   the same thing twice makes no commit.
 - **Vendor files are opaque and content-addressed.** An SQ show folder (zipped), a dLive archive,
-  a `.CLF`, a `.dm3s` is stored under `vendor/<sha256><ext>` and listed in `show.vendor`.
-  Songbook never writes one back: the SQ image and the CLF carry checksums nobody has solved.
+  a `.CLF`, a `.dm3s` is stored under `vendor/<sha256><ext>` and listed in `show.vendor`. The
+  kept file is never modified. `vendor_write` writes the show into a *copy* of an SQ show
+  (`ah::write`) or a `.CLF` (`yamaha::clf::write`) — only the fields the reader decodes, with the
+  checksum recomputed; the other kinds are export-only because their blobs are only partly decoded.
 - **Conversion reports; it does not claim.** Every dropped entity is a `Note` with `level:
   dropped`, every nearest-neighbour substitution `adapted`. The converted show carries the report.
 - **Nothing writes to a desk implicitly.** Pull is read-only. Push is a separate button with a
@@ -100,6 +102,20 @@ src-tauri/examples/demo.rs          writes public/demo/*.json; seed.rs imports f
   `bus:aux:<mono count + 1>`; `extra.ahTarget` remembers the desk's own target so a push goes
   back to the right one. A converted show has no `ahTarget` and is addressed by kind, number and
   its `stereo` flag.
+- **SQ images: the class byte, 48 records, 0-based scene files, 16-byte names.** A patch record
+  is `[index][00][class][fe]` at 336-byte stride from 0x38c — class 0 none, 1 Local, 2 SLink,
+  3 USB, 4 I/O Port (MixPad's tab order; 1 and 3 seen). The first 48 records are Ip1–48 and the
+  table runs on for 122 strips. `SCENE001.DAT` is scene **2**. The scene name field is 16 bytes
+  (MixPad truncated a longer one on re-save). A scene image carries the same patch table as
+  NVDATA — the patch the scene was stored with — so `ah::write` writes the new patch into every
+  scene that agreed with the old NVDATA patch and leaves the others alone.
+- **The two solved checksums.** An SQ image (`NVDATA.DAT`, `SCENEnnn.DAT`, 128 KiB) ends in a
+  little-endian zlib CRC-32 over `[0x14, 0x1fffc)` — the 20-byte header is outside it. A `.CLF` is a
+  chain of `ff 6c 00 00` records (u32 LE header length, 8-byte name, u32 LE data length); the
+  `MEMAPI` record's last four bytes are the one's complement of the big-endian u32 word sum of the
+  data before them, stored big-endian. Both were confirmed by reproducing the editors' own saves
+  byte-for-byte (`sq::write_tests`, `clf::write_tests`, gated on the sample files). The `MMS`
+  record's checksum field is 0 in every sample and is left alone.
 - **The A&H name blocks: match the class from the known list.** The byte before the class name
   is the low half of the block length and is often a printable letter (`VMono Aux`, `XMono
   Group`); walking back over "letters" picks it up. `dlive::NAME_CLASSES` is the list.

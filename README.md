@@ -56,10 +56,16 @@ What has been checked, and against what:
   files and has **not** been checked with a rename-and-diff. Faders, sends, preamps and processing
   are in the scene blobs and not decoded. dLive shows are expected to be the same format; none has
   been examined.
-- **SQ show files** — `NVDATA.DAT` gives the input patch (located by controlled diff in SQ MixPad
-  1.6.0 as an SQ-7); the patch byte is a socket number with no class, so sockets are labelled as
-  input sockets rather than Local. `SCENEnnn.DAT` gives the scene name. Names, preamps and the mix
-  are not decoded from the files; the live driver reads the mix instead.
+- **SQ show files** — `NVDATA.DAT` gives the input patch for Ip1–48 (located by controlled diff
+  in SQ MixPad 1.6.0 as an SQ-7): each record holds a socket index and a class byte — Local and
+  USB seen in MixPad's default show, SLink and I/O Port assumed from its tab order — and Local
+  49–54 are labelled as the stereo TRS pairs because that is where the default show patches
+  Ip41–46. `SCENEnnn.DAT` (scene nnn + 1; the index is 0-based) gives the 16-character scene
+  name and stores the patch the scene was saved with. Names, preamps and the mix are not decoded
+  from the files; the live driver reads the mix instead. The images' checksum (zlib CRC-32 over
+  the body after the 20-byte header) was solved on 2026-09-20; MixPad loaded a Songbook-written
+  show, showed its patch and scene name, and on logout re-saved `NVDATA.DAT` **byte-identical**
+  to what Songbook had written.
 - **Yamaha DM3 / TF scenes** — the MBDF container and the self-describing MMSXLIT payload decode
   all 28 factory scenes shipped inside DM3 Editor V3 and TF Editor V4.50 (names, colours, icons,
   faders, mutes, pans, sends, DCA / mute-group membership, EQ / gate / comp on-off, head amps,
@@ -69,7 +75,11 @@ What has been checked, and against what:
 - **Yamaha CL/QL console files** — the input patch table and the split channel-name table,
   located by controlled diffs in QL Editor V5.8.1 on a QL5; read back from those exact files.
   The offsets are absolute, so the adapter validates the table before trusting it. Nothing else
-  in the file is decoded; it carries a checksum, so nothing is written back.
+  in the file is decoded. The file's checksum (a one's-complement word sum over its `MEMAPI`
+  record) was solved on 2026-09-20: the writer reproduces three of QL Editor's own saves
+  byte-for-byte, QL Editor loads a Songbook-written file and shows its edits, and it refuses the
+  same file with one checksum bit flipped ("Checksum error (-2)") — so the law is the one the
+  loader checks.
 - **Yamaha SCP (live)** — the protocol grammar, the `prminfo` dictionary, the `NOTIFY` push and
   the scene verbs were observed on a real DM3 (V3.00) in this fleet's Dante-BabelBox work; the
   CL/QL, TF, DM7 and RIVAGE grammars follow the `yamaha-rcp` Companion module. The driver's pull,
@@ -87,9 +97,13 @@ What has been checked, and against what:
 - **Companion** — the page export matches the control shape Companion 5.0.5 saves and the action
   ids in the installed modules, but has not yet been imported into a running Companion.
 
-Songbook does not write vendor show files: the SQ image and the `.CLF` carry checksums that have
-not been solved, and the A&H scene blobs are only partly decoded. The vendor file a show came in
-with is kept byte-for-byte and can be exported for the desk; the live driver is the write path.
+Songbook writes two vendor formats, and only the fields it decodes: an SQ show (input patch and
+scene names into copies of its images) and a CL/QL `.CLF` (input patch and channel names). Both
+checksums are solved and both vendors' editors load the written files (MixPad round-trips the
+NVDATA image byte-for-byte; QL Editor checks the checksum and passes ours); whether a console
+accepts a written file has not yet been tried on a desk. dLive / Avantis
+archives and DM3 / TF / DM7 scenes are kept byte-for-byte and exported as they came; the live
+driver is the write path for everything else.
 
 ## Layout
 

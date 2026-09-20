@@ -88,11 +88,56 @@ proves the codec and the driver logic, not the desk. The first real pull will be
 matters; the DM3 at `dm3.local:49280` when it is on the bench, and the SQ-5, are the desks to
 try.
 
+## The two checksums (solved 2026-09-20)
+
+Both blocked writing until they were solved with controlled saves from the vendors' editors.
+
+**SQ images** (`NVDATA.DAT`, `SCENEnnn.DAT`, 128 KiB each). The last four bytes are a
+little-endian zlib CRC-32 (reflected polynomial `0xEDB88320`, init and xorout `0xFFFFFFFF`)
+over `[0x14, 0x1fffc)`: the 20-byte header (image kind, `00 fe ff…`, `01 06 00 01 04 00 00 00`)
+is outside it. Found by trying the standard CRC family over candidate spans against MixPad's
+`CurrentShow` images and matching both (`3d1b8fc2`, `6d27dd16`) on the first span that skipped
+the header. `sq::fix_image_checksum` recomputes it; `write_nvdata_patch` and `write_scene_name`
+call it.
+
+**CL/QL `.CLF`.** After the 0x28-byte file header and a section directory the file is a chain
+of records: `ff 6c 00 00`, u32 LE header length (20), an 8-byte NUL-padded name, u32 LE data
+length, then the data. The tables live in the `MEMAPI` record (data `[0x6620, 0x1003c)` in the
+QL5 samples); its last four bytes are the **one's complement of the sum of the big-endian u32
+words** of the data before them, stored big-endian. Found from the deltas between QL Editor
+saves: a one-byte patch change moved the stored value by exactly that byte times its
+position weight, a five-character rename by the same arithmetic over five bytes. Confirmed by
+reproducing three of the editor's files byte-for-byte from a fourth (`clf::write_tests`, run
+with `SONGBOOK_CLF_DIR=~/Documents`). The following `MMS` record's checksum field is 0 in every
+sample; the `00 00 ae 64` at 0x6608 and the file's last four bytes never moved under MEMAPI
+edits and are left alone.
+
+**Verified in the editors (2026-09-20).** QL Editor loaded a Songbook-written `.CLF` (CH1
+renamed, CH2 → DANTE33, CH3 unpatched, a long name cut to eight) and refused the same file with
+one checksum bit flipped: `Load operation not complete due to an error. Checksum error. (-2)`.
+MixPad (offline, SQ-7) loaded a Songbook-written `NVDATA.DAT` + `SCENE001.DAT`, showed Ip1 →
+Local 7, Ip2 unpatched, Ip3 → Local 3 in its I/O Patch matrix and the scene name in its list,
+and on logout re-saved `NVDATA.DAT` byte-identical to Songbook's output. Its re-save of the
+scene image also taught three things: the scene name field is 16 bytes (the 19-character name
+came back as 16 + zeros); `SCENE001.DAT` is listed as scene 2 (the file index is 0-based, and a
+fresh store there is named "Scene 2"); and the scene image carries the same 48 patch records as
+NVDATA (Ip1/Ip2 moved in both). The default SQ-7 show's records also settled the class byte:
+Ip1–32 `(n, 1)`, Ip33–40 `(0, 0)`, Ip41–46 `(49–54, 1)` — the three stereo TRS pairs — and
+Ip47/48 `(1–2, 3)` — USB 1/2 — so byte +2 is the socket class in MixPad's tab order, not a flag.
+
+**Driving MixPad from a session.** Its JUCE views ignore System Events `click at`, but the
+background `app_click` events *queue* and are delivered when the app is next activated — click
+in the background, then `activate`, then look. Other sessions' GUI work steals focus mid-script,
+so never type blind; check the frontmost process before every keystroke.
+
+**Still to prove on a desk:** that a console accepts a written file; a console's loader may
+check more than the editors do.
+
 ## Things deliberately not done
 
-- Writing vendor files. The SQ image ends in a 4-byte checksum, the CLF carries one near an
-  `MMS` marker, and the A&H scene blobs are only partly decoded; a stale checksum may be refused
-  and nobody has a desk to find out with.
+- Writing the A&H archives and the Yamaha MBDF scenes back. Their blobs are only partly
+  decoded, so a write could not promise to leave the rest intact. (The SQ images and the CLF are
+  written — see the checksum section below.)
 - Decoding the SQ scene images beyond the name, the CLF beyond patch and names, the A&H blobs
   beyond patch, names, colours and scene titles. Each needs its own controlled diff; the live
   driver reads the same data from the desk.

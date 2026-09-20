@@ -40,9 +40,12 @@ fn sq5() -> Show {
         ("Spare 1", "off", 21, FADER_OFF),
         ("Spare 2", "off", 22, FADER_OFF),
     ];
-    show.system.units.push(build::unit("input", "Input sockets", "", UnitRole::Console));
-    for n in 1..=24u32 {
-        show.sockets.push(build::socket("input", Direction::In, n, SocketKind::Mic, &format!("Input socket {n}")));
+    // The skeleton already carries the SQ-5's Local 1–16; the demo band is
+    // patched across Local and the stereo TRS pairs.
+    for n in 17..=24u32 {
+        if show.socket(&songbook_ah::sq::socket_id(n)).is_none() {
+            show.sockets.push(build::socket("local", Direction::In, n, SocketKind::Line, &format!("Local {n}")));
+        }
     }
     for (i, (name, color, socket, fader)) in names.iter().enumerate() {
         let c = &mut show.channels[i];

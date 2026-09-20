@@ -8,5 +8,6 @@ pub mod import;
 pub mod live;
 pub mod midi;
 pub mod sq;
+pub mod write;
 
 pub use midi::PORT;

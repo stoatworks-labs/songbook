@@ -229,6 +229,56 @@ async fn import_path(app: AppHandle, path: String, platform: Option<Platform>) -
     tauri::async_runtime::spawn_blocking(move || import_any(&lib, Path::new(&path), platform, a.as_deref())).await.map_err(err)?
 }
 
+
+/// What `vendor_write` did.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct VendorWriteResult {
+    /// Where the file or folder went.
+    path: String,
+    /// `sq-show` or `clf`.
+    kind: String,
+    /// What was written and what was not, per driver.
+    report: Value,
+}
+
+/// Write the show as it is on screen into a copy of one of its kept vendor
+/// files: an SQ show (input patch into `NVDATA.DAT`, scene names into the
+/// `SCENEnnn.DAT` images — as a folder when `path` has no `.zip` suffix) or a
+/// CL/QL `.CLF` (input patch and channel names). Each image's checksum is
+/// recomputed. The kept file is never modified.
+#[tauri::command]
+async fn vendor_write(app: AppHandle, show: Show, sha256: String, path: String) -> CmdResult<VendorWriteResult> {
+    let state = app.state::<AppState>();
+    let lib = library(&state)?;
+    tauri::async_runtime::spawn_blocking(move || {
+        let blob = show.vendor.iter().find(|b| b.sha256 == sha256).ok_or("no such vendor file")?.clone();
+        let bytes = lib.vendor_bytes(&show.id, &blob).map_err(err)?;
+        let dest = Path::new(&path);
+        let report = match blob.kind.as_str() {
+            "sq-show" => {
+                if path.to_lowercase().ends_with(".zip") {
+                    let (out, report) = songbook_ah::write::write_zip(&bytes, &show).map_err(err)?;
+                    std::fs::write(dest, out).map_err(err)?;
+                    serde_json::to_value(report).map_err(err)?
+                } else {
+                    let report = songbook_ah::write::write_folder(&bytes, &show, dest).map_err(err)?;
+                    serde_json::to_value(report).map_err(err)?
+                }
+            }
+            "clf" => {
+                let (out, report) = songbook_yamaha::clf::write(&bytes, &show).map_err(err)?;
+                std::fs::write(dest, out).map_err(err)?;
+                serde_json::to_value(report).map_err(err)?
+            }
+            other => return Err(format!("Songbook cannot write a {other} file: only SQ shows and CL/QL .CLF files have solved checksums")),
+        };
+        Ok(VendorWriteResult { path, kind: blob.kind, report })
+    })
+    .await
+    .map_err(err)?
+}
+
 #[tauri::command]
 fn export_show_json(state: State<AppState>, id: String, path: String) -> CmdResult<()> {
     let show = library(&state)?.load(&id).map_err(err)?;
@@ -581,6 +631,7 @@ pub fn run() {
             import_path,
             export_show_json,
             vendor_export,
+            vendor_write,
             write_file,
             write_text,
             read_text,

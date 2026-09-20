@@ -137,6 +137,7 @@ export const mockApi: Api = {
   importPath: () => notDesktop('Import'),
   exportShowJson: async (id) => download(`${shows.get(id)?.meta.name ?? 'show'}.songbook.json`, JSON.stringify(shows.get(id), null, 2), 'application/json'),
   vendorExport: () => notDesktop('Vendor export'),
+  vendorWrite: () => notDesktop('Writing a vendor file'),
   writeFile: async (path, base64) => download(path.split('/').pop() ?? 'file', Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)), 'application/octet-stream'),
   writeText: async (path, text) => download(path.split('/').pop() ?? 'file', text, 'text/plain'),
   readText: () => notDesktop('Reading a file'),
