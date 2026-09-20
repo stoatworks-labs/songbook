@@ -9,7 +9,7 @@ use std::net::TcpListener;
 use std::time::Duration;
 
 use base64::Engine;
-use rand::RngCore;
+use rand::Rng as _;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
@@ -61,11 +61,11 @@ pub fn begin(config: OAuthConfig) -> Result<PendingAuth> {
     let port = listener.local_addr()?.port();
     let redirect_uri = format!("http://127.0.0.1:{port}/callback");
     let mut raw = [0u8; 48];
-    rand::thread_rng().fill_bytes(&mut raw);
+    rand::rng().fill_bytes(&mut raw);
     let verifier = b64url(&raw);
     let challenge = b64url(&Sha256::digest(verifier.as_bytes()));
     let mut st = [0u8; 16];
-    rand::thread_rng().fill_bytes(&mut st);
+    rand::rng().fill_bytes(&mut st);
     let state = b64url(&st);
     let mut url = url::Url::parse(&config.authorize_url).map_err(|e| Error::Other(e.to_string()))?;
     {
@@ -151,8 +151,8 @@ fn exchange(config: &OAuthConfig, code: &str, verifier: &str, redirect_uri: &str
     if let Some(s) = &config.client_secret {
         form.push(("client_secret", s));
     }
-    let resp = ureq::post(&config.token_url).send_form(&form).map_err(|e| Error::Other(format!("token exchange: {e}")))?;
-    tokens_from(resp.into_json().map_err(|e| Error::Other(e.to_string()))?)
+    let mut resp = ureq::post(&config.token_url).send_form(form).map_err(|e| Error::Other(format!("token exchange: {e}")))?;
+    tokens_from(resp.body_mut().read_json().map_err(|e| Error::Other(e.to_string()))?)
 }
 
 pub fn refresh(config: &OAuthConfig, refresh_token: &str) -> Result<Tokens> {
@@ -160,8 +160,8 @@ pub fn refresh(config: &OAuthConfig, refresh_token: &str) -> Result<Tokens> {
     if let Some(s) = &config.client_secret {
         form.push(("client_secret", s));
     }
-    let resp = ureq::post(&config.token_url).send_form(&form).map_err(|e| Error::Other(format!("token refresh: {e}")))?;
-    let mut t = tokens_from(resp.into_json().map_err(|e| Error::Other(e.to_string()))?)?;
+    let mut resp = ureq::post(&config.token_url).send_form(form).map_err(|e| Error::Other(format!("token refresh: {e}")))?;
+    let mut t = tokens_from(resp.body_mut().read_json().map_err(|e| Error::Other(e.to_string()))?)?;
     if t.refresh_token.is_none() {
         t.refresh_token = Some(refresh_token.to_string());
     }

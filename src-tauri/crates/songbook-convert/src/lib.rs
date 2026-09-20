@@ -373,6 +373,48 @@ pub fn convert(source: &Show, target: Platform, model: &str) -> Conversion {
     Conversion { show: out, notes: r.notes, carried: r.carried, adapted, dropped }
 }
 
+/// A new, empty show for a desk: the SQ skeleton for SQ, otherwise a shell
+/// sized from the capability table. What `New show` and the browser tool
+/// both start from.
+pub fn blank_show(name: &str, platform: Platform, model: &str) -> Show {
+    use songbook_model::{build, ids, Bus, BusKind, Channel, ChannelKind, Direction, SocketKind, UnitRole};
+    let mut show = match platform {
+        Platform::AhSq => songbook_ah::import::sq_skeleton(name, platform, model),
+        _ => {
+            let mut s = Show::new(name, platform);
+            let cap = capabilities(platform, model);
+            s.system.units.push(build::unit("local", &format!("{model} local sockets"), model, UnitRole::Console));
+            s.sockets.extend(build::sockets("local", Direction::In, cap.local_inputs, SocketKind::Mic, "Local"));
+            s.sockets.extend(build::sockets("local", Direction::Out, cap.local_outputs, SocketKind::Line, "Out"));
+            for n in 1..=cap.input_channels {
+                s.channels.push(Channel::new(ids::channel(n), n, ChannelKind::Input, &format!("Ch {n}")));
+            }
+            for n in 1..=cap.mains {
+                let label = if n == 1 { "Main".to_string() } else { format!("Main {n}") };
+                s.buses.push(Bus::new(BusKind::Main, n, &label, true));
+            }
+            for n in 1..=cap.auxes {
+                s.buses.push(Bus::new(BusKind::Aux, n, &format!("Aux {n}"), false));
+            }
+            for n in 1..=cap.matrices {
+                s.buses.push(Bus::new(BusKind::Matrix, n, &format!("Mtx {n}"), false));
+            }
+            for n in 1..=cap.fx_sends {
+                s.buses.push(Bus::new(BusKind::FxSend, n, &format!("FX {n}"), false));
+            }
+            for n in 1..=cap.dcas {
+                s.dcas.push(build::dca(n, &format!("DCA {n}")));
+            }
+            for n in 1..=cap.mute_groups {
+                s.mute_groups.push(build::mute_group(n, &format!("Mute {n}")));
+            }
+            s
+        }
+    };
+    show.system.model = model.to_string();
+    show
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -466,46 +508,4 @@ mod tests {
         assert_eq!(c.show.channels[1].color.as_deref(), Some("purple"));
         assert!(c.notes.iter().any(|n| n.message.contains("orange is not in the SQ-6 palette")));
     }
-}
-
-/// A new, empty show for a desk: the SQ skeleton for SQ, otherwise a shell
-/// sized from the capability table. What `New show` and the browser tool
-/// both start from.
-pub fn blank_show(name: &str, platform: Platform, model: &str) -> Show {
-    use songbook_model::{build, ids, Bus, BusKind, Channel, ChannelKind, Direction, SocketKind, UnitRole};
-    let mut show = match platform {
-        Platform::AhSq => songbook_ah::import::sq_skeleton(name, platform, model),
-        _ => {
-            let mut s = Show::new(name, platform);
-            let cap = capabilities(platform, model);
-            s.system.units.push(build::unit("local", &format!("{model} local sockets"), model, UnitRole::Console));
-            s.sockets.extend(build::sockets("local", Direction::In, cap.local_inputs, SocketKind::Mic, "Local"));
-            s.sockets.extend(build::sockets("local", Direction::Out, cap.local_outputs, SocketKind::Line, "Out"));
-            for n in 1..=cap.input_channels {
-                s.channels.push(Channel::new(ids::channel(n), n, ChannelKind::Input, &format!("Ch {n}")));
-            }
-            for n in 1..=cap.mains {
-                let label = if n == 1 { "Main".to_string() } else { format!("Main {n}") };
-                s.buses.push(Bus::new(BusKind::Main, n, &label, true));
-            }
-            for n in 1..=cap.auxes {
-                s.buses.push(Bus::new(BusKind::Aux, n, &format!("Aux {n}"), false));
-            }
-            for n in 1..=cap.matrices {
-                s.buses.push(Bus::new(BusKind::Matrix, n, &format!("Mtx {n}"), false));
-            }
-            for n in 1..=cap.fx_sends {
-                s.buses.push(Bus::new(BusKind::FxSend, n, &format!("FX {n}"), false));
-            }
-            for n in 1..=cap.dcas {
-                s.dcas.push(build::dca(n, &format!("DCA {n}")));
-            }
-            for n in 1..=cap.mute_groups {
-                s.mute_groups.push(build::mute_group(n, &format!("Mute {n}")));
-            }
-            s
-        }
-    };
-    show.system.model = model.to_string();
-    show
 }
