@@ -15,3 +15,7 @@ src-tauri/gen/schemas/
 # Large captures used while developing the drivers; the trimmed fixtures
 # under fixtures/ are what the tests use.
 captures/
+
+# Songbook Lite: the wasm is built by scripts/build-lite.sh; dist-lite/ is what wrangler deploys.
+lite/public/songbook.wasm
+dist-lite/

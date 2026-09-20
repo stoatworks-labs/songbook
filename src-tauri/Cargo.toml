@@ -20,6 +20,7 @@ members = [
   "crates/songbook-library",
   "crates/songbook-convert",
   "crates/songbook-companion",
+  "crates/songbook-wasm",
 ]
 
 [workspace.package]
@@ -60,3 +61,12 @@ zip = { version = "2", default-features = false, features = ["deflate"] }
 [profile.release]
 opt-level = 2
 lto = true
+
+# The browser build: size over speed, no unwinding (a panic in the tab is a
+# page reload either way), one codegen unit so LTO can see everything.
+[profile.wasm]
+inherits = "release"
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"

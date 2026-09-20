@@ -8,6 +8,6 @@ authors.workspace = true
 
 [dependencies]
 songbook-model = { path = "../songbook-model" }
+songbook-ah = { path = "../songbook-ah" }
 serde = { workspace = true }
 serde_json = { workspace = true }
-uuid = { workspace = true }

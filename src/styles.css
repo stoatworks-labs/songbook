@@ -770,3 +770,22 @@ textarea {
   flex-wrap: wrap;
   white-space: nowrap;
 }
+
+.lite-mark {
+  font-style: normal;
+  font-size: 12px;
+  margin-left: 8px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--accent);
+  color: #10131a;
+  vertical-align: middle;
+  letter-spacing: 0.04em;
+}
+.pill.lite {
+  background: #1f2a3a;
+  color: var(--text);
+}
+.pill.lite a {
+  color: var(--accent);
+}

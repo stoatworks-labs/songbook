@@ -1,0 +1,26 @@
+# Cloudflare deployment for Songbook Lite — the browser build of this repo.
+#
+# A static-assets-only Worker: no server code and nothing to send a show
+# file to, which is the privacy claim. The Rust core runs as WebAssembly in
+# the tab. Built by .github/workflows/deploy.yml (scripts/build-lite.sh:
+# cargo → lite/public/songbook.wasm, then vite → dist-lite/), never by a
+# Cloudflare dashboard build. Check what is live with:
+#
+#   cf-run npx wrangler deployments list
+#
+# `lite/public/_headers` is copied into dist-lite/ by Vite and carries the
+# CSP ('wasm-unsafe-eval' is what lets the module instantiate) and the
+# immutable-cache rules; the assets runtime honours it.
+
+name = "songbook-lite"
+compatibility_date = "2026-07-30"
+
+[assets]
+directory = "./dist-lite"
+
+# Declared here so the hostname is part of the repo. This silently disables
+# the workers.dev URL. Do the FIRST deploy by hand: a new custom domain can
+# take over six minutes to resolve, longer than the workflow's live check.
+[[routes]]
+pattern = "songbook-lite.stoatworks-labs.com"
+custom_domain = true

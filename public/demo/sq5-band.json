@@ -8,8 +8,8 @@
       "festival",
       "band"
     ],
-    "created": "2026-09-20T01:07:24Z",
-    "modified": "2026-09-20T01:07:24Z"
+    "created": "2026-09-20T01:31:47Z",
+    "modified": "2026-09-20T01:31:47Z"
   },
   "platform": "ah-sq",
   "system": {
@@ -167,6 +167,54 @@
       "label": "Local 16"
     },
     {
+      "id": "skt:local:in:49",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "in",
+      "index": 49,
+      "label": "ST1 L"
+    },
+    {
+      "id": "skt:local:in:50",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "in",
+      "index": 50,
+      "label": "ST1 R"
+    },
+    {
+      "id": "skt:local:in:51",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "in",
+      "index": 51,
+      "label": "ST2 L"
+    },
+    {
+      "id": "skt:local:in:52",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "in",
+      "index": 52,
+      "label": "ST2 R"
+    },
+    {
+      "id": "skt:local:in:53",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "in",
+      "index": 53,
+      "label": "ST3 L"
+    },
+    {
+      "id": "skt:local:in:54",
+      "unitId": "unit:local",
+      "kind": "line",
+      "direction": "in",
+      "index": 54,
+      "label": "ST3 R"
+    },
+    {
       "id": "skt:local:out:1",
       "unitId": "unit:local",
       "kind": "line",
@@ -261,6 +309,262 @@
       "direction": "out",
       "index": 12,
       "label": "Out 12"
+    },
+    {
+      "id": "skt:usb:in:1",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 1,
+      "label": "USB 1"
+    },
+    {
+      "id": "skt:usb:in:2",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 2,
+      "label": "USB 2"
+    },
+    {
+      "id": "skt:usb:in:3",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 3,
+      "label": "USB 3"
+    },
+    {
+      "id": "skt:usb:in:4",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 4,
+      "label": "USB 4"
+    },
+    {
+      "id": "skt:usb:in:5",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 5,
+      "label": "USB 5"
+    },
+    {
+      "id": "skt:usb:in:6",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 6,
+      "label": "USB 6"
+    },
+    {
+      "id": "skt:usb:in:7",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 7,
+      "label": "USB 7"
+    },
+    {
+      "id": "skt:usb:in:8",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 8,
+      "label": "USB 8"
+    },
+    {
+      "id": "skt:usb:in:9",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 9,
+      "label": "USB 9"
+    },
+    {
+      "id": "skt:usb:in:10",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 10,
+      "label": "USB 10"
+    },
+    {
+      "id": "skt:usb:in:11",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 11,
+      "label": "USB 11"
+    },
+    {
+      "id": "skt:usb:in:12",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 12,
+      "label": "USB 12"
+    },
+    {
+      "id": "skt:usb:in:13",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 13,
+      "label": "USB 13"
+    },
+    {
+      "id": "skt:usb:in:14",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 14,
+      "label": "USB 14"
+    },
+    {
+      "id": "skt:usb:in:15",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 15,
+      "label": "USB 15"
+    },
+    {
+      "id": "skt:usb:in:16",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 16,
+      "label": "USB 16"
+    },
+    {
+      "id": "skt:usb:in:17",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 17,
+      "label": "USB 17"
+    },
+    {
+      "id": "skt:usb:in:18",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 18,
+      "label": "USB 18"
+    },
+    {
+      "id": "skt:usb:in:19",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 19,
+      "label": "USB 19"
+    },
+    {
+      "id": "skt:usb:in:20",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 20,
+      "label": "USB 20"
+    },
+    {
+      "id": "skt:usb:in:21",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 21,
+      "label": "USB 21"
+    },
+    {
+      "id": "skt:usb:in:22",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 22,
+      "label": "USB 22"
+    },
+    {
+      "id": "skt:usb:in:23",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 23,
+      "label": "USB 23"
+    },
+    {
+      "id": "skt:usb:in:24",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 24,
+      "label": "USB 24"
+    },
+    {
+      "id": "skt:usb:in:25",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 25,
+      "label": "USB 25"
+    },
+    {
+      "id": "skt:usb:in:26",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 26,
+      "label": "USB 26"
+    },
+    {
+      "id": "skt:usb:in:27",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 27,
+      "label": "USB 27"
+    },
+    {
+      "id": "skt:usb:in:28",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 28,
+      "label": "USB 28"
+    },
+    {
+      "id": "skt:usb:in:29",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 29,
+      "label": "USB 29"
+    },
+    {
+      "id": "skt:usb:in:30",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 30,
+      "label": "USB 30"
+    },
+    {
+      "id": "skt:usb:in:31",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 31,
+      "label": "USB 31"
+    },
+    {
+      "id": "skt:usb:in:32",
+      "unitId": "unit:usb",
+      "kind": "usb",
+      "direction": "in",
+      "index": 32,
+      "label": "USB 32"
     },
     {
       "id": "skt:local:in:17",

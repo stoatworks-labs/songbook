@@ -11,7 +11,7 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
 // `clearScreen: false` keeps the Rust compiler's output visible when Vite and
 // cargo share a terminal under `tauri dev`.
 export default defineConfig({
-  define: { __APP_VERSION__: JSON.stringify(`v${pkg.version}`) },
+  define: { __APP_VERSION__: JSON.stringify(`v${pkg.version}`), __SONGBOOK_LITE__: 'false' },
   plugins: [react()],
   base: './',
   clearScreen: false,

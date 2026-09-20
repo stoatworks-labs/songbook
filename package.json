@@ -15,7 +15,9 @@
     "typecheck": "tsc -b",
     "tauri": "tauri",
     "app": "tauri dev",
-    "app:build": "tauri build"
+    "app:build": "tauri build",
+    "dev:lite": "vite --config lite/vite.config.ts",
+    "build:lite": "./scripts/build-lite.sh"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",

@@ -92,41 +92,7 @@ fn show_save(state: State<AppState>, mut show: Show, message: String) -> CmdResu
 #[tauri::command]
 fn show_new(state: State<AppState>, name: String, platform: Platform, model: String) -> CmdResult<Show> {
     let lib = library(&state)?;
-    let mut show = match platform {
-        Platform::AhSq => songbook_ah::import::sq_skeleton(&name, platform, &model),
-        _ => {
-            let mut s = Show::new(&name, platform);
-            s.system.model = model.clone();
-            let cap = songbook_convert::capabilities(platform, &model);
-            s.system.units.push(songbook_model::build::unit("local", &format!("{model} local sockets"), &model, songbook_model::UnitRole::Console));
-            s.sockets.extend(songbook_model::build::sockets("local", songbook_model::Direction::In, cap.local_inputs, songbook_model::SocketKind::Mic, "Local"));
-            s.sockets.extend(songbook_model::build::sockets("local", songbook_model::Direction::Out, cap.local_outputs, songbook_model::SocketKind::Line, "Out"));
-            for n in 1..=cap.input_channels {
-                s.channels.push(songbook_model::Channel::new(songbook_model::ids::channel(n), n, songbook_model::ChannelKind::Input, &format!("Ch {n}")));
-            }
-            for n in 1..=cap.mains {
-                let label = if n == 1 { "Main".to_string() } else { format!("Main {n}") };
-                s.buses.push(songbook_model::Bus::new(songbook_model::BusKind::Main, n, &label, true));
-            }
-            for n in 1..=cap.auxes {
-                s.buses.push(songbook_model::Bus::new(songbook_model::BusKind::Aux, n, &format!("Aux {n}"), false));
-            }
-            for n in 1..=cap.matrices {
-                s.buses.push(songbook_model::Bus::new(songbook_model::BusKind::Matrix, n, &format!("Mtx {n}"), false));
-            }
-            for n in 1..=cap.fx_sends {
-                s.buses.push(songbook_model::Bus::new(songbook_model::BusKind::FxSend, n, &format!("FX {n}"), false));
-            }
-            for n in 1..=cap.dcas {
-                s.dcas.push(songbook_model::build::dca(n, &format!("DCA {n}")));
-            }
-            for n in 1..=cap.mute_groups {
-                s.mute_groups.push(songbook_model::build::mute_group(n, &format!("Mute {n}")));
-            }
-            s
-        }
-    };
-    show.system.model = model;
+    let mut show = songbook_convert::blank_show(&name, platform, &model);
     lib.save(&mut show, "Created", author(&state).as_deref()).map_err(err)?;
     Ok(show)
 }

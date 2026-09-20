@@ -112,6 +112,28 @@ with `SONGBOOK_CLF_DIR=~/Documents`). The following `MMS` record's checksum fiel
 sample; the `00 00 ae 64` at 0x6608 and the file's last four bytes never moved under MEMAPI
 edits and are left alone.
 
+**Confirmed in the editors' binaries (2026-09-20).** Both editors ship unstripped x86_64
+Mach-Os. MixPad: `cScene::CalcSceneCRC(const u8*)` feeds bytes `0x14 … 0x1fffb` one at a time
+to `_CRC32` (a zlib table at 0x260860); `cScene::CheckBufferCRC` compares. QL Editor:
+`mem_CalcCheckSumLong(const void*, unsigned len)` sums `endian_swap` of every u32 but the last
+(`len/4 − 1` words), returns `~sum` byte-swapped; `CCollectionBase::setCheckSumToBuffer` stores
+it in the buffer's last word (and for collection type 4 a second one at the end of a shorter
+inner span — the MEMAPI record is not one, or our byte-exact reproductions would have missed it).
+There is a 16-bit sibling `mem_CalcCheckSum` (BE u16 halfwords, complemented) that no file
+path calls. The loader's error table (`ErrorTranslator::setupErrorMessages`): 0 no error,
+−1 parameter out of range, −2 **checksum**, −3 not available, −4 same parameter, −5 read only,
+−6 data size, −7 different kinds of data, −8 cancel, −9 version, −10 edit flag, −11 protected.
+`CCollectionBase::CheckSetDataValidity` clamps out-of-range parameters on load and *re-writes*
+the checksum afterwards, so a value out of range costs −1, not a refusal.
+
+The `.CLF` layout, from the section directory at 0x30 (`[u16 id][u16 0][u32 BE offset]`
+entries, 35 of them in the QL5 file): every section starts with a 0x18-byte collection header
+`01 00 00 00 00 00 00 08 | 01 70 <id> 00 | <count> | 02 00 00 00 | <element size>`. Section
+0x10 (scene memory, at 0x5324) holds the `MEMAPI` (current mix) and `MMS` records; the file's
+last four bytes are the same complement-sum over the trailing 0x600 bytes `[0x1c504, 0x1cb00)`.
+The `00 00 ae 64` at 0x6608 is the last word of section 0x10's table before the MEMAPI record
+and matches no sum rule tried; it never moves under MEMAPI edits.
+
 **Verified in the editors (2026-09-20).** QL Editor loaded a Songbook-written `.CLF` (CH1
 renamed, CH2 → DANTE33, CH3 unpatched, a long name cut to eight) and refused the same file with
 one checksum bit flipped: `Load operation not complete due to an error. Checksum error. (-2)`.
@@ -132,6 +154,30 @@ so never type blind; check the frontmost process before every keystroke.
 
 **Still to prove on a desk:** that a console accepts a written file; a console's loader may
 check more than the editors do.
+
+## Songbook Lite (2026-09-20)
+
+The browser build follows PatchFerret's shape: the crates compiled for `wasm32-unknown-unknown`
+behind one C-ABI call (`sb_call`: `u32 len | JSON | u32 n | (u32 len | bytes)*` both ways), no
+wasm-bindgen, so the toolchain is `cargo build --profile wasm --target wasm32-unknown-unknown`
+and the module has an empty import section (CI asserts it). What that cost: `chrono`'s default
+`wasmbind` feature and `uuid`'s `getrandom` both import host functions, so the model takes a
+clock (`set_clock`) and an ID seed (`seed_ids`) from JS and `uuid` is native-only. The `wasm`
+profile (`opt-level = "s"`, LTO, one codegen unit, `panic = "abort"`) gives 1.6 MB raw / 313 KB
+brotli; the SCP dictionaries are only 88 KB of that, the rest is code.
+
+The front end is the desktop app's, with `__SONGBOOK_LITE__` defined by `lite/vite.config.ts`
+and `src/lib/lite.ts` implementing the whole `api` over the wasm plus an IndexedDB library
+(`shows`, `versions`, `vendor` stores; a save is a commit when the content hash moves, the diff
+is Rust's through the wasm). File dialogs become `<input type=file>` pickers whose result is a
+token the api spends (`browser-files.ts`), saves become downloads, and the SQ write-back is
+always a zip because a page cannot write a folder. Measured in the tab: a QL5 `.CLF` imports in
+15 ms, an SQ show in 40 ms; a written `.CLF` re-imports with its edits.
+
+Vite dev traps: with `root: lite/`, the shared sources are served under
+`/@fs/Users/…/src/…`, and after an HMR invalidation the live module URLs carry `?t=…` — a
+console `import()` of the bare URL gets a *second* module instance with its own state (the file
+token map), so pick the URL from `performance.getEntriesByType('resource')`.
 
 ## Things deliberately not done
 

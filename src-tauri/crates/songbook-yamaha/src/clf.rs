@@ -86,6 +86,16 @@ pub fn parse(d: &[u8], file_name: &str) -> Result<Show, Error> {
     show.system.units.push(build::unit("local", &format!("{model} OMNI inputs"), &model, UnitRole::Console));
     show.system.units.push(build::unit("dante", "Dante", "", UnitRole::Network));
     show.meta.source = Some(songbook_model::SourceInfo { kind: "file".into(), origin: file_name.to_string(), at: songbook_model::now(), firmware: None });
+    // Every socket the patch byte can name, so an edit can choose any of them:
+    // the desk's own OMNI inputs (QL5/CL5 32, QL1 16, CL1/CL3 8 — capped by
+    // the code range) and DANTE 1–64.
+    let omni = match model.as_str() {
+        "QL1" => 16,
+        "CL1" | "CL3" => 8,
+        _ => 32,
+    };
+    show.sockets.extend(build::sockets("local", Direction::In, omni, SocketKind::Mic, "INPUT"));
+    show.sockets.extend(build::sockets("dante", Direction::In, 64, SocketKind::Dante, "DANTE"));
 
     let Some(table) = d.get(PATCH_TABLE..PATCH_TABLE + CHANNELS) else {
         show.note(NoteLevel::Info, "channels", "the file ends before the input patch table this format keeps at a fixed offset; no channels could be read");
@@ -131,8 +141,16 @@ pub fn parse(d: &[u8], file_name: &str) -> Result<Show, Error> {
 /// A synthetic CLF for tests: the product string, a default patch table and
 /// the names given.
 pub fn synthetic(product_str: &str, names: &[(usize, &str)], patch: &[(usize, u8)]) -> Vec<u8> {
-    let mut d = vec![0u8; NAME_TABLE + NAME_BLOCKS * NAME_SLOTS * NAME_CHUNK + 64];
+    // Sized and framed like the QL5 file: a MEMAPI record at 0x660c whose data
+    // runs to 0x1003c, so the tables fall inside it and the checksum is real.
+    const MEMAPI_AT: usize = 0x660c;
+    const MEMAPI_LEN: usize = 0x9a1c;
+    let mut d = vec![0u8; MEMAPI_AT + 0x14 + MEMAPI_LEN];
     d[PRODUCT_AT..PRODUCT_AT + product_str.len()].copy_from_slice(product_str.as_bytes());
+    d[MEMAPI_AT..MEMAPI_AT + 4].copy_from_slice(&RECORD_TAG);
+    d[MEMAPI_AT + 4..MEMAPI_AT + 8].copy_from_slice(&0x14u32.to_le_bytes());
+    d[MEMAPI_AT + 8..MEMAPI_AT + 14].copy_from_slice(b"MEMAPI");
+    d[MEMAPI_AT + 16..MEMAPI_AT + 20].copy_from_slice(&(MEMAPI_LEN as u32).to_le_bytes());
     for i in 0..CHANNELS {
         d[PATCH_TABLE + i] = match i {
             0..=7 => 0x41 + i as u8,
@@ -152,6 +170,7 @@ pub fn synthetic(product_str: &str, names: &[(usize, &str)], patch: &[(usize, u8
             }
         }
     }
+    let _ = fix_memapi_checksum(&mut d);
     d
 }
 
@@ -354,38 +373,32 @@ mod write_tests {
 
     #[test]
     fn synthetic_file_round_trips_through_write() {
-        // A synthetic CLF with a MEMAPI record wrapping the tables.
-        let mut d = synthetic("QL [OSX, 5.8.1.27]", &[(1, "Kick")], &[]);
-        // Wrap: put a record header at 0x28 whose data spans the rest, with 4 checksum bytes appended.
-        let body_len = d.len() - 0x28 - 20;
-        let mut hdr = RECORD_TAG.to_vec();
-        hdr.extend_from_slice(&20u32.to_le_bytes());
-        hdr.extend_from_slice(b"MEMAPI\0\0");
-        hdr.extend_from_slice(&((body_len + 4) as u32).to_le_bytes());
-        // Move the tables 20 bytes later is awkward; instead rebuild: header 0x28, record header, tables shifted.
-        let tables = d.split_off(0x28);
-        d.extend_from_slice(&hdr);
-        d.extend_from_slice(&tables);
-        d.extend_from_slice(&[0, 0, 0, 0]);
-        // Tables moved by 20 bytes, so the parser's absolute offsets no longer apply to this synthetic;
-        // this test only checks the record walk and the checksum arithmetic.
+        let d = synthetic("QL [OSX, 5.8.1.27]", &[(1, "Kick")], &[]);
         let recs = records(&d);
         assert_eq!(recs.len(), 1);
         assert_eq!(recs[0].name, "MEMAPI");
-        assert_eq!(memapi_checksum_ok(&d), Some(false));
-        fix_memapi_checksum(&mut d).unwrap();
         assert_eq!(memapi_checksum_ok(&d), Some(true));
-        let body = &d[recs[0].data_start..recs[0].data_end - 4];
-        assert_eq!(record_checksum(body), u32::from_be_bytes(d[recs[0].data_end - 4..recs[0].data_end].try_into().unwrap()));
         assert_eq!(record_checksum(&[0, 0, 0, 1, 0, 0, 0, 2]), !3u32);
+        let mut show = parse(&d, "x.CLF").unwrap();
+        show.channels[0].label = "Bass".into();
+        show.channels[1].source = Some(ids::socket("dante", Direction::In, 7));
+        let (out, report) = write(&d, &show).unwrap();
+        assert!(report.skipped.is_empty(), "{:?}", report.skipped);
+        assert_eq!(memapi_checksum_ok(&out), Some(true));
+        assert_ne!(out, d);
+        let back = parse(&out, "x.CLF").unwrap();
+        assert_eq!(back.channels[0].label, "Bass");
+        assert_eq!(back.channels[1].source.as_deref(), Some("skt:dante:in:7"));
+        let mut bad = out.clone();
+        bad[0x1003b] ^= 0xFF;
+        assert_eq!(memapi_checksum_ok(&bad), Some(false));
     }
 
     /// QL Editor's own saves, when the samples are on this machine: the
     /// writer must reproduce `mod2`, `mod3` and `name` from `base` exactly.
     #[test]
     fn reproduces_ql_editor_saves_if_present() {
-        let Ok(dir) = std::env::var("SONGBOOK_CLF_DIR") else { return };
-        let dir = std::path::Path::new(&dir);
+        let dir = std::env::var("SONGBOOK_CLF_DIR").map(std::path::PathBuf::from).unwrap_or_else(|_| std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../fixtures/ql5"));
         let Ok(base) = std::fs::read(dir.join("pfql_base.CLF")) else { return };
         assert_eq!(memapi_checksum_ok(&base), Some(true));
         let show = parse(&base, "pfql_base.CLF").unwrap();

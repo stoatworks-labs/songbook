@@ -114,6 +114,8 @@ const tauriApi = {
 
 /** True inside the Tauri webview; false in a plain browser tab. */
 export const inTauri = '__TAURI_INTERNALS__' in window;
+/** True in the hosted Songbook Lite build: Rust in WebAssembly, library in IndexedDB. */
+export const isLite: boolean = typeof __SONGBOOK_LITE__ !== 'undefined' && __SONGBOOK_LITE__ && !inTauri;
 
-/** The real commands inside the app; the in-memory demo in a browser tab. */
-export const api: typeof tauriApi = inTauri ? tauriApi : (await import('./mock')).mockApi;
+/** The real commands inside the app; the wasm core in Songbook Lite; the in-memory demo in a plain tab. */
+export const api: typeof tauriApi = inTauri ? tauriApi : isLite ? (await import('./lite')).liteApi : (await import('./mock')).mockApi;

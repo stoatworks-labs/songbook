@@ -1,0 +1,113 @@
+# Build Songbook Lite and put it in front of visitors.
+#
+# Same shape as the rest of the fleet's deploy.yml (negative-space is the
+# original), plus the wasm step: the Rust core is compiled for
+# wasm32-unknown-unknown and copied into the site before Vite builds it.
+# Needs CLOUDFLARE_API_TOKEN as a repo secret and CLOUDFLARE_ACCOUNT_ID as a
+# repo variable.
+
+name: deploy
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - ".github/dependabot.yml"
+      - ".github/workflows/desktop.yml"
+  workflow_dispatch:
+
+# Newest push wins. wrangler uploads assets first and activates the version as
+# one step at the end, so a cancelled run never becomes the live version.
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check the Cloudflare token is present
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${TOKEN:-}" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN is not set on this repository, so the"
+            echo "::error::site cannot be deployed. The keychain entry cf-run uses"
+            echo "::error::(service 'stoatworks-cloudflare') holds the same token:"
+            echo "::error::  gh secret set CLOUDFLARE_API_TOKEN --repo stoatworks-labs/songbook"
+            exit 1
+          fi
+          echo "token present - ok"
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - run: npm ci
+
+      # The readers, the writers and the conversion are what the page runs;
+      # the wasm crate's own tests exercise the request framing.
+      - name: Test the crates the page ships
+        working-directory: src-tauri
+        run: cargo test -p songbook-model -p songbook-ah -p songbook-yamaha -p songbook-convert -p songbook-companion -p songbook-wasm
+      - run: npm test
+
+      - name: Build the wasm and the site
+        run: ./scripts/build-lite.sh
+
+      - name: Smoke-check the site
+        uses: stoatworks-labs/smoke-check@v1
+        with:
+          dir: dist-lite
+          root: body
+          min-text: "0"
+
+      # wrangler is pinned because it is not a dependency of the project.
+      # Bump it deliberately.
+      - name: Deploy to Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          WRANGLER_SEND_METRICS: "false"
+        run: npx --yes wrangler@4.116.0 deploy
+
+      # Prove it landed: the <head> carries the hashed asset names and is
+      # untouched by Cloudflare's injected bot-management script (filtered
+      # anyway, -F because the marker holds $ signs).
+      - name: Check the live site is serving this build
+        run: |
+          set -euo pipefail
+          want=$(sed -n '1,/<\/head>/p' dist-lite/index.html \
+                 | grep -vF '__CF$cv$params' | shasum -a 256 | cut -d' ' -f1)
+          echo "expecting the live <head> to hash to $want"
+          for attempt in 1 2 3 4 5; do
+            got=$(curl -sS --max-time 30 "https://songbook-lite.stoatworks-labs.com/" \
+                  | sed -n '1,/<\/head>/p' | grep -vF '__CF$cv$params' \
+                  | shasum -a 256 | cut -d' ' -f1 || true)
+            if [ "$got" = "$want" ]; then
+              echo "live site is serving this build (attempt $attempt)"
+              exit 0
+            fi
+            echo "not there yet, got $got — retrying in 10s (attempt $attempt)"
+            sleep 10
+          done
+          echo "::error::Deployed, but https://songbook-lite.stoatworks-labs.com/ is still not"
+          echo "::error::serving this build's <head>. The upload succeeded, so the edge is"
+          echo "::error::serving something else — check the Worker's routes and the custom domain."
+          exit 1

@@ -1,0 +1,19 @@
+[package]
+name = "songbook-wasm"
+description = "The browser build's entry point: Songbook's readers, writers, conversion and Companion export behind one bytes-in, bytes-out call"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+songbook-model = { path = "../songbook-model" }
+songbook-ah = { path = "../songbook-ah" }
+songbook-yamaha = { path = "../songbook-yamaha" }
+songbook-convert = { path = "../songbook-convert" }
+songbook-companion = { path = "../songbook-companion" }
+serde = { workspace = true }
+serde_json = { workspace = true }

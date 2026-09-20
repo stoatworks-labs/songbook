@@ -721,11 +721,13 @@ mod write_tests {
     /// one this code computes.
     #[test]
     fn real_mixpad_images_if_present() {
-        let dir = std::path::PathBuf::from(std::env::var("HOME").unwrap_or_default()).join("Library/Application Support/Allen & Heath");
-        let Ok(rd) = std::fs::read_dir(&dir) else { return };
+        let mut dirs = vec![std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../fixtures/sq7")];
+        let ah = std::path::PathBuf::from(std::env::var("HOME").unwrap_or_default()).join("Library/Application Support/Allen & Heath");
+        if let Ok(rd) = std::fs::read_dir(&ah) {
+            dirs.extend(rd.flatten().map(|e| e.path().join("CurrentShow")));
+        }
         let mut checked = 0;
-        for e in rd.flatten() {
-            let show = e.path().join("CurrentShow");
+        for show in dirs {
             let Ok(files) = std::fs::read_dir(&show) else { continue };
             for f in files.flatten() {
                 let Ok(d) = std::fs::read(f.path()) else { continue };
@@ -735,6 +737,24 @@ mod write_tests {
                 }
             }
         }
+        assert!(checked >= 2, "the fixtures under fixtures/sq7 should have been checked");
         eprintln!("checked {checked} MixPad images");
+    }
+
+    /// The MixPad fixture reads as the default SQ-7 show it is.
+    #[test]
+    fn mixpad_fixture_reads_the_default_layout() {
+        let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../fixtures/sq7");
+        let nv = std::fs::read(dir.join("NVDATA.DAT")).expect("fixtures/sq7/NVDATA.DAT");
+        let p = input_patch(&nv);
+        assert_eq!(p.len(), 48);
+        assert_eq!(p[2].socket, Some(PatchSocket { class: CLASS_LOCAL, index: 10 }));
+        assert_eq!(p[32].socket, None);
+        assert_eq!(p[40].socket.unwrap().label(), "ST1 L");
+        assert_eq!(p[46].socket.unwrap().label(), "USB 1");
+        let sc = std::fs::read(dir.join("SCENE001.DAT")).expect("fixtures/sq7/SCENE001.DAT");
+        assert_eq!(scene_name(&sc), "Scene 2");
+        // The scene was stored before Ip3 moved to Local 10: it keeps Local 3.
+        assert_eq!(input_patch(&sc)[2].socket, Some(PatchSocket { class: CLASS_LOCAL, index: 3 }), "the scene stores the patch it was saved with");
     }
 }

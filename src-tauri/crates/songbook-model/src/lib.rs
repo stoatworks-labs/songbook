@@ -175,7 +175,7 @@ impl Show {
     pub fn new(name: &str, platform: Platform) -> Show {
         Show {
             schema: SCHEMA.to_string(),
-            id: uuid::Uuid::new_v4().to_string(),
+            id: new_id(),
             meta: Meta {
                 name: name.to_string(),
                 notes: String::new(),
@@ -316,8 +316,72 @@ impl Show {
     }
 }
 
+/// The current time as RFC 3339 seconds.
+///
+/// On native targets this is the system clock. In WebAssembly there is no
+/// clock (and no `getrandom`), so the host sets one with [`set_clock`] before
+/// each call, and IDs come from a seeded generator ([`seed_ids`]) instead of
+/// `uuid`. Both fall back to fixed values rather than panicking.
 pub fn now() -> String {
-    chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Secs, true)
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Secs, true)
+    }
+    #[cfg(target_arch = "wasm32")]
+    {
+        let secs = host::CLOCK.load(std::sync::atomic::Ordering::Relaxed);
+        chrono::DateTime::from_timestamp(secs, 0).unwrap_or_default().to_rfc3339_opts(chrono::SecondsFormat::Secs, true)
+    }
+}
+
+/// A fresh unique ID: a v4 UUID natively, a seeded pseudo-random one in wasm.
+pub fn new_id() -> String {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        uuid::Uuid::new_v4().to_string()
+    }
+    #[cfg(target_arch = "wasm32")]
+    {
+        host::next_id()
+    }
+}
+
+/// Tell the model what time it is (Unix seconds). Native builds ignore it.
+pub fn set_clock(unix_secs: i64) {
+    let _ = unix_secs;
+    #[cfg(target_arch = "wasm32")]
+    host::CLOCK.store(unix_secs, std::sync::atomic::Ordering::Relaxed);
+}
+
+/// Seed the wasm ID generator (from `crypto.getRandomValues` on the host side).
+pub fn seed_ids(seed: u64) {
+    let _ = seed;
+    #[cfg(target_arch = "wasm32")]
+    host::SEED.store(seed | 1, std::sync::atomic::Ordering::Relaxed);
+}
+
+#[cfg(target_arch = "wasm32")]
+mod host {
+    use std::sync::atomic::{AtomicI64, AtomicU64, Ordering};
+    pub static CLOCK: AtomicI64 = AtomicI64::new(0);
+    pub static SEED: AtomicU64 = AtomicU64::new(0x9E37_79B9_7F4A_7C15);
+
+    fn next_u64() -> u64 {
+        // xorshift64*; the seed is host randomness, so IDs differ across sessions.
+        let mut x = SEED.load(Ordering::Relaxed);
+        x ^= x >> 12;
+        x ^= x << 25;
+        x ^= x >> 27;
+        SEED.store(x, Ordering::Relaxed);
+        x.wrapping_mul(0x2545_F491_4F6C_DD1D)
+    }
+
+    /// UUID-shaped, version nibble 4, so it looks like every other show ID.
+    pub fn next_id() -> String {
+        let a = next_u64();
+        let b = next_u64();
+        format!("{:08x}-{:04x}-4{:03x}-{:04x}-{:012x}", (a >> 32) as u32, (a >> 16) as u16, (a & 0xfff) as u16, ((b >> 48) as u16 & 0x3fff) | 0x8000, b & 0xffff_ffff_ffff)
+    }
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Default)]

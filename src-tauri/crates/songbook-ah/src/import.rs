@@ -189,12 +189,21 @@ pub fn import_sq_files(name: &str, files: SqFiles, platform: Option<Platform>) -
 pub fn sq_skeleton(name: &str, platform: Platform, model: &str) -> Show {
     let mut show = Show::new(name, platform);
     let m = sq::model(model);
-    show.system.model = m.name.to_string();
-    show.system.units.push(build::unit("local", &format!("{} local sockets", m.name), m.name, UnitRole::Console));
+    // A show file does not say which SQ wrote it; keep the family name rather
+    // than claim the smallest desk.
+    let model_name = if model.eq_ignore_ascii_case("sq") { "SQ" } else { m.name };
+    show.system.model = model_name.to_string();
+    show.system.units.push(build::unit("local", &format!("{model_name} local sockets"), model_name, UnitRole::Console));
     show.sockets.extend(build::sockets("local", Direction::In, m.local_inputs, SocketKind::Mic, "Local"));
+    // The stereo TRS pairs sit at Local 49–54 in the image's numbering.
+    for n in sq::LOCAL_STEREO_FIRST..=sq::LOCAL_STEREO_LAST {
+        let sk = sq::PatchSocket { class: sq::CLASS_LOCAL, index: n };
+        show.sockets.push(build::socket("local", Direction::In, n, SocketKind::Line, &sk.label()));
+    }
     show.sockets.extend(build::sockets("local", Direction::Out, m.local_outputs, SocketKind::Line, "Out"));
     show.system.units.push(build::unit("slink", "SLink", "SLink", UnitRole::Network));
     show.system.units.push(build::unit("usb", "USB-B audio", "USB", UnitRole::Internal));
+    show.sockets.extend(build::sockets("usb", Direction::In, 32, SocketKind::Usb, "USB"));
     for n in 1..=sq::INPUT_CHANNELS as u32 {
         show.channels.push(Channel::new(ids::channel(n), n, ChannelKind::Input, &format!("Ip{n}")));
     }

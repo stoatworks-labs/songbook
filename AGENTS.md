@@ -13,8 +13,11 @@ Yamaha (CL/QL, TF, DM3, DM7, RIVAGE PM) — and Qu / CQ are capability descripto
 driver. It is the audio sibling of Showbook (video switchers) and shares its shape on purpose:
 the library crate is the same code renamed.
 
-It is a desktop app and not a browser tool for one reason: the desks speak raw TCP (MIDI on
-51325, SCP on 49280) that a hosted page cannot reach.
+It is a desktop app and not only a browser tool for one reason: the desks speak raw TCP (MIDI on
+51325, SCP on 49280) that a hosted page cannot reach. Everything else ships twice: **Songbook
+Lite** (`lite/`, deployed by `wrangler.toml` to songbook-lite.stoatworks-labs.com) is the same
+React front end told at build time (`__SONGBOOK_LITE__`) to talk to the Rust core compiled to
+WebAssembly (`crates/songbook-wasm`) and to keep its library in IndexedDB (`src/lib/lite.ts`).
 
 ## 2. The one idea
 
@@ -47,7 +50,9 @@ Four rules the model keeps:
 
 ```
 src/types.ts                   the JSON shapes shared with Rust — read this first
-src/lib/ipc.ts                 every invoke in one place; mock.ts is the browser demo
+src/lib/ipc.ts                 every invoke in one place; lite.ts is Songbook Lite's backend (wasm + IndexedDB), mock.ts the browser demo
+src/lib/wasm.ts                the bytes-in/bytes-out bridge to songbook-wasm; browser-files.ts turns file pickers into path tokens
+lite/                          Songbook Lite's index.html, vite.config.ts and static files; scripts/build-lite.sh builds it
 src/store.ts                   zustand: settings, library entries, the open show, dirty flag
 src/components/ShowView.tsx    the tabs; each tab is one file
 src/lib/pdf.ts                 the PDF, drawn with pdf-lib; csv.ts and labels.ts beside it
@@ -58,6 +63,7 @@ src-tauri/crates/songbook-yamaha    mbdf.rs, mms.rs, scene.rs (MBDF → Show), c
 src-tauri/crates/songbook-library   Library (history, vendor blobs), sync.rs (four providers), oauth.rs (PKCE)
 src-tauri/crates/songbook-convert   capabilities.rs (per model), lib.rs (the conversion + report)
 src-tauri/crates/songbook-companion export/import of .companionconfig pages
+src-tauri/crates/songbook-wasm      the browser entry point: one C-ABI call framed as JSON + blobs, no wasm-bindgen
 src-tauri/examples/demo.rs          writes public/demo/*.json; seed.rs imports files into a library
 ```
 
@@ -84,6 +90,14 @@ src-tauri/examples/demo.rs          writes public/demo/*.json; seed.rs imports f
   not answer; the strip counts come from the dictionary's `xcount`. The dLive driver asks every
   possible strip for its name and keeps the ones that answer.
 - **Sync never deletes.** The mirror copies newer files across and nothing else.
+- **The wasm imports nothing.** `songbook-wasm` is built with plain `cargo build --target
+  wasm32-unknown-unknown`; there is no wasm-bindgen glue, so anything that would import a host
+  function (a clock, `getrandom`) breaks the page. The model takes its clock and its ID seed from
+  the host (`set_clock`, `seed_ids`); `uuid` is a native-only dependency. CI checks the import
+  section is empty.
+- **Songbook Lite and the desktop app share every screen.** A screen that must differ asks
+  `isLite` (Devices and Sync are hidden; file dialogs become pickers and downloads). Do not fork a
+  component for Lite — add the branch.
 
 ## 5. Traps
 
@@ -143,12 +157,18 @@ src-tauri/examples/demo.rs          writes public/demo/*.json; seed.rs imports f
 
 ## 6. Verifying
 
-- `cd src-tauri && cargo test --workspace` — 53 tests: the codecs against the protocol
-  documents' worked examples, the readers against synthetic files, the live drivers against
-  in-process fake desks, the conversion, the Companion pages, the library.
+- `cd src-tauri && cargo test --workspace` — the codecs against the protocol documents' worked
+  examples, the readers against synthetic files and the editor-made fixtures under `fixtures/`
+  (the CLF writer reproduces QL Editor's saves byte-for-byte; the SQ reader and CRC run on
+  MixPad's images), the live drivers against in-process fake desks, the conversion, the Companion
+  pages, the library, the wasm request framing.
 - Env-gated tests against real files on this machine (skip when absent):
   `SONGBOOK_AH_SHOW=<Director .tar.gz>`, `SONGBOOK_YAMAHA_SCENES=<DM3 or TF Editor SceneList dir>`,
-  `SONGBOOK_CLF_DIR=<dir of .CLF>`.
+  `SONGBOOK_CLF_DIR=<dir of .CLF>` (defaults to `fixtures/ql5`).
+- `./scripts/build-lite.sh` builds the wasm and the site into `dist-lite/`; `npm run dev:lite`
+  serves Lite on :5179. Drive it from the page: `registerFiles([new File(...)])` from
+  `src/lib/browser-files.ts` returns the token `api.importPath` takes, and wrapping
+  `URL.createObjectURL` captures what would have downloaded.
 - `cargo run --example seed -- <library> <files…>` imports from the terminal;
   `cargo run --example demo -- ../public/demo` regenerates the demo shows.
 - `npm test` builds the PDF for both demo shows; `npm run typecheck`, `npm run lint`.

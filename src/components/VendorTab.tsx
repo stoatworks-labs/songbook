@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { pickFolder, pickSave } from '../lib/dialogs';
-import { api, type VendorWriteResult } from '../lib/ipc';
+import { api, isLite, type VendorWriteResult } from '../lib/ipc';
 import { useStore } from '../store';
 import { bytes, fmtDate } from '../lib/format';
 import { Panel } from './ui';
@@ -82,7 +82,12 @@ export function VendorTab() {
                       <button type="button" className="btn small" onClick={() => void exportBlob(v.sha256, suggested)}>
                         Export as kept…
                       </button>
-                      {w && v.kind === 'sq-show' && (
+                      {w && v.kind === 'sq-show' && isLite && (
+                        <button type="button" className="btn small primary" title={w.what} onClick={() => void writeBack(v.sha256, v.kind, suggested, true)}>
+                          Write show (zip download)
+                        </button>
+                      )}
+                      {w && v.kind === 'sq-show' && !isLite && (
                         <>
                           <button type="button" className="btn small primary" title={w.what} onClick={() => void writeBack(v.sha256, v.kind, suggested, false)}>
                             Write show into folder…
@@ -111,7 +116,7 @@ export function VendorTab() {
           <p>
             dLive / Avantis show archives and DM3 / TF / DM7 scene files are export-only for now: their scene blobs are only partly decoded, so a write could not promise to leave the rest intact.
           </p>
-          <p>Load a written file the way the desk expects: an SQ show folder on a USB stick under AHSQ/Shows, a .CLF through CL/QL Editor or the console's USB load.</p>
+          <p>Load a written file the way the desk expects: an SQ show folder on a USB stick under AHSQ/Shows{isLite ? ' (unzip the download into a folder of that name)' : ''}, a .CLF through CL/QL Editor or the console's USB load.</p>
         </div>
       </Panel>
       {last && (

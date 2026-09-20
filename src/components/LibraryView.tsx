@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { pickFile, pickFolder } from '../lib/dialogs';
 import { fmtDate } from '../lib/format';
-import { api } from '../lib/ipc';
+import { api, isLite } from '../lib/ipc';
 import { useStore } from '../store';
 import { PLATFORM_LABEL, type Platform } from '../types';
 import { Empty, Field, Panel } from './ui';
@@ -115,7 +115,7 @@ export function LibraryView() {
       {visible.length === 0 ? (
         <Empty>
           {entries.length === 0
-            ? 'No shows yet. Import an SQ show folder, a dLive / Avantis show archive (.tar.gz), a Yamaha .CLF or a DM3 / TF / DM7 scene, or pull one from a desk.'
+            ? `No shows yet. Import an SQ show folder, a dLive / Avantis show archive (.tar.gz), a Yamaha .CLF or a DM3 / TF / DM7 scene${isLite ? '' : ', or pull one from a desk'}.`
             : 'Nothing matches the filter.'}
         </Empty>
       ) : (

@@ -34,7 +34,20 @@ Not affiliated with or endorsed by Allen & Heath or Yamaha.
 | **Convert** | Any desk to any other: the show is re-keyed into the target's capacity and spelling — names cut to its length, colours mapped to its palette, buses beyond its count dropped with every send into them — and every adaptation and drop is a note the converted show carries. |
 | **Companion** | A Bitfocus Companion page — a mute button per channel, DCA and mute group, a recall per scene — for the `allenheath-sq`, `allenheath-dlive`, `allenheath-avantis` or `yamaha-rcp` module; and reading a page back to check which buttons still match the show. |
 
-## Running it
+## Songbook Lite — the browser version
+
+**<https://songbook-lite.stoatworks-labs.com>** is the same application built as a website:
+import show files, inspect and edit them, generate the PDF / CSV / label strips / Companion
+pages, convert between desks and write SQ shows and `.CLF` files back — with the Rust core
+compiled to WebAssembly and the library kept in the browser's IndexedDB. **A show file never
+leaves your machine**; there is no server to send it to. What Lite leaves out is exactly what a
+web page cannot do: talking to a live desk (raw TCP on 51325 / 49280) and cloud sync. It links to
+this repository for the full desktop app.
+
+Build it locally with `npm run build:lite` (needs `rustup target add wasm32-unknown-unknown`);
+`npm run dev:lite` serves it on :5179 once `lite/public/songbook.wasm` exists.
+
+## Running the desktop app
 
 ```bash
 npm install
@@ -43,7 +56,7 @@ npm run app:build    # release bundle for this platform
 ```
 
 Open a browser tab at the Vite dev server instead and you get a demo with two example shows in
-memory — every screen works, but files and desks need the desktop app.
+memory — every screen works, but files and desks need the desktop app (or Songbook Lite).
 
 ## Status
 
@@ -108,17 +121,21 @@ driver is the write path for everything else.
 ## Layout
 
 ```
-src/                     React front end (types.ts mirrors the Rust model)
+src/                     React front end (types.ts mirrors the Rust model); lib/lite.ts is the browser backend
+lite/                    Songbook Lite: its index.html, Vite config and static files (the wasm is built into lite/public)
 src-tauri/src/lib.rs     the Tauri commands, thin
 src-tauri/crates/
   songbook-model         the brand-neutral desk show model, diff, validation
-  songbook-ah            Allen & Heath: SQ images, dLive/Avantis archives, MIDI over TCP/IP
-  songbook-yamaha        Yamaha: CL/QL .CLF, DM3/TF/DM7 MBDF scenes, SCP; dict/ holds the desks' prminfo tables
+  songbook-ah            Allen & Heath: SQ images (read and write), dLive/Avantis archives, MIDI over TCP/IP
+  songbook-yamaha        Yamaha: CL/QL .CLF (read and write), DM3/TF/DM7 MBDF scenes, SCP; dict/ holds the desks' prminfo tables
   songbook-library       the on-disk library, history, sync providers, OAuth
-  songbook-convert       capability tables and the conversion
+  songbook-convert       capability tables, the conversion, blank shows
   songbook-companion     Companion page export/import
+  songbook-wasm          the browser build's one entry point (bytes in, bytes out)
+fixtures/                files the vendors' editors wrote, for the byte-exact tests
 public/demo/             the two example shows the browser demo serves (src-tauri/examples/demo.rs writes them)
 docs/NOTES.md            what was learned building it, including the traps
+wrangler.toml            the Cloudflare Worker that serves Songbook Lite (static assets only)
 ```
 
 ## Licence

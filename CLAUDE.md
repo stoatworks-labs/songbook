@@ -15,9 +15,13 @@ npm run typecheck    # tsc -b
 cd src-tauri && cargo test --workspace     # every crate, on synthetic files and fake desks
 cd src-tauri && cargo run --example seed -- ~/Documents/Songbook <show files…>
 cd src-tauri && cargo run --example demo -- ../public/demo
+cd src-tauri && cargo run --example write_back -- <vendor file or SQ folder> <out> 'ch:1=Kick' 'ch:2@usb:1' 'scene:2=Opening'
+npm run build:lite   # Songbook Lite: cargo → lite/public/songbook.wasm, vite → dist-lite/
+npm run dev:lite     # Lite on :5179 (build the wasm first)
 ```
 
-`npm run dev` alone serves the browser demo (two example shows in memory).
+`npm run dev` alone serves the browser demo (two example shows in memory). Songbook Lite is
+deployed by `.github/workflows/deploy.yml` (wrangler, static assets) on every push to main.
 
 ## Release
 
