@@ -288,6 +288,21 @@ export interface SourceInfo {
   firmware?: string;
 }
 
+/** Who the show is for and who is mixing it — printed on the documentation. */
+export interface Production {
+  /** The show or event name, if it differs from the file name. */
+  event?: string;
+  client?: string;
+  company?: string;
+  venue?: string;
+  /** Show date(s), free text: "12–14 March 2026", "Fri 3 Oct". */
+  date?: string;
+  /** Engineer on the desk. */
+  operator?: string;
+  /** Phone or email for whoever is on the desk. */
+  contact?: string;
+}
+
 export interface Meta {
   name: string;
   notes: string;
@@ -296,6 +311,7 @@ export interface Meta {
   modified: string;
   author?: string;
   source?: SourceInfo;
+  production?: Production;
 }
 
 export interface Show {

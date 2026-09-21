@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { fmtDate } from '../lib/format';
 import { api, inTauri } from '../lib/ipc';
 import { useStore } from '../store';
-import { PLATFORM_LABEL } from '../types';
+import { PLATFORM_LABEL, type Production } from '../types';
 import { Field, Panel, Stat } from './ui';
 
 export function OverviewTab() {
@@ -22,6 +22,12 @@ export function OverviewTab() {
   }, [show]);
 
   const models = info?.platforms.find((p) => p.id === show.platform)?.models ?? [];
+  const prod = show.meta.production ?? {};
+  const setProd = (key: keyof Production, value: string) =>
+    update((s) => {
+      const p: Production = { ...(s.meta.production ?? {}), [key]: value || undefined };
+      s.meta.production = Object.values(p).some(Boolean) ? p : undefined;
+    });
   const inputs = show.channels.filter((c) => c.kind === 'input');
   const named = inputs.filter((c) => c.label.trim() && !/^(ip|ch)\s?\d+$/i.test(c.label.trim()));
   const patched = inputs.filter((c) => c.source);
@@ -68,6 +74,32 @@ export function OverviewTab() {
           Created {fmtDate(show.meta.created)} · modified {fmtDate(show.meta.modified)}
           {show.meta.author ? ` · ${show.meta.author}` : ''}
           {show.meta.source ? ` · from ${show.meta.source.kind} ${show.meta.source.origin} at ${fmtDate(show.meta.source.at)}` : ''}
+        </div>
+      </Panel>
+      <Panel title="Production">
+        <p className="muted small">Printed on the documentation's cover. All optional; nothing here comes from the desk.</p>
+        <div className="row wrap">
+          <Field label="Show / event">
+            <input value={prod.event ?? ''} placeholder={show.meta.name} onChange={(e) => setProd('event', e.target.value)} />
+          </Field>
+          <Field label="Client">
+            <input value={prod.client ?? ''} onChange={(e) => setProd('client', e.target.value)} />
+          </Field>
+          <Field label="Production company">
+            <input value={prod.company ?? ''} onChange={(e) => setProd('company', e.target.value)} />
+          </Field>
+          <Field label="Venue">
+            <input value={prod.venue ?? ''} onChange={(e) => setProd('venue', e.target.value)} />
+          </Field>
+          <Field label="Date(s)">
+            <input value={prod.date ?? ''} placeholder="12–14 March 2026" onChange={(e) => setProd('date', e.target.value)} />
+          </Field>
+          <Field label="Engineer">
+            <input value={prod.operator ?? ''} onChange={(e) => setProd('operator', e.target.value)} />
+          </Field>
+          <Field label="Contact">
+            <input value={prod.contact ?? ''} placeholder="phone or email" onChange={(e) => setProd('contact', e.target.value)} />
+          </Field>
         </div>
       </Panel>
       <Panel title="At a glance">

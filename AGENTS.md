@@ -7,7 +7,7 @@ holds the short command reference; this file explains the model and the traps.
 
 A Tauri v2 desktop app (React front end, Rust core) that keeps a library of mixing desk show
 files with version history, and does the things a show file should let you do: inspect, edit,
-document (PDF, CSV, label strips), convert between desks, build Companion pages, pull from and
+document (PDF or web page, CSV, label strips), convert between desks, build Companion pages, pull from and
 push to the live desk. Two vendors are real today — Allen & Heath (SQ, dLive, Avantis) and
 Yamaha (CL/QL, TF, DM3, DM7, RIVAGE PM) — and Qu / CQ are capability descriptors waiting for a
 driver. It is the audio sibling of Showbook (video switchers) and shares its shape on purpose:
@@ -22,7 +22,7 @@ WebAssembly (`crates/songbook-wasm`) and to keep its library in IndexedDB (`src/
 ## 2. The one idea
 
 **Everything above the drivers sees only `songbook_model::Show`.** A driver reads a vendor file
-or a live desk into that model and writes it back out; the inspector, the PDF, the conversion
+or a live desk into that model and writes it back out; the inspector, the documentation, the conversion
 and the history never look at vendor data. What a driver cannot express in the shared fields
 goes into an entity's `extra` bag under the vendor's own name (`yamahaColor`, `ahTarget`,
 `scpTable`), so nothing is lost on a round trip but nothing vendor-specific leaks up. Conversion
@@ -55,7 +55,13 @@ src/lib/wasm.ts                the bytes-in/bytes-out bridge to songbook-wasm; b
 lite/                          Songbook Lite's index.html, vite.config.ts and static files; scripts/build-lite.sh builds it
 src/store.ts                   zustand: settings, library entries, the open show, dirty flag
 src/components/ShowView.tsx    the tabs; each tab is one file
-src/lib/pdf.ts                 the PDF, drawn with pdf-lib; csv.ts and labels.ts beside it
+src/lib/pdf.ts                 entry: builds the document, renders it as PDF or HTML
+src/lib/document.ts            every section of the documentation, as blocks and diagrams
+src/lib/doc/ir.ts              the block/diagram model both renderers draw
+src/lib/doc/theme.ts           the five themes, the papers, colour helpers
+src/lib/doc/diagrams.ts        shared diagram helpers (SVG paths, the column flow)
+src/lib/doc/render-pdf.ts      pdf-lib renderer; render-html.ts writes one self-contained page
+src/lib/glossary.ts            the glossary chapter; csv.ts and labels.ts beside them
 src-tauri/src/lib.rs           Tauri commands: library, import, devices, convert, companion, sync
 src-tauri/crates/songbook-model     Show, diff, summary, ids
 src-tauri/crates/songbook-ah        midi.rs (wire codec), sq.rs (images + NRPN tables), dlive.rs (archive + channel tables), import.rs, live.rs
@@ -71,7 +77,7 @@ src-tauri/examples/demo.rs          writes public/demo/*.json; seed.rs imports f
 
 - **Rust decides, TypeScript displays.** The model, every parse, the conversion and its report,
   the diff, the Companion page — all Rust. The UI edits the model and draws it. The exceptions,
-  deliberately: the PDF, the CSV and the label strips are rendered in the webview and written to
+  deliberately: the documentation, the CSV and the label strips are rendered in the webview and written to
   disk through one command.
 - **Every save is a commit.** `Library::save` hashes the canonical JSON (with `meta.modified`
   blanked), keeps a gzip'd snapshot per distinct hash, appends to `history/index.json`. Saving
@@ -171,4 +177,4 @@ src-tauri/examples/demo.rs          writes public/demo/*.json; seed.rs imports f
   `URL.createObjectURL` captures what would have downloaded.
 - `cargo run --example seed -- <library> <files…>` imports from the terminal;
   `cargo run --example demo -- ../public/demo` regenerates the demo shows.
-- `npm test` builds the PDF for both demo shows; `npm run typecheck`, `npm run lint`.
+- `npm test` builds the PDF and the web page for the demo shows, in every theme; `npm run typecheck`, `npm run lint`.

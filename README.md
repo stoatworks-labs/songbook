@@ -30,15 +30,15 @@ Not affiliated with or endorsed by Allen & Heath or Yamaha.
 | **Devices** | Pull the whole mix from a Yamaha desk over SCP (names, colours, faders, mutes, pans, sends, head amps, DCA and mute-group membership, the scene list) or from an A&H desk over MIDI/TCP (SQ: mutes, levels, pans, assignments; dLive / Avantis: names, colours, mutes, faders, sends, dLive preamps). Push the same back. Recall scenes on any of them; store scenes on a Yamaha. |
 | **Inspect** | Units and sockets with what feeds what; every channel with its source, preamp, fader, pan, assignments, processing on/off and sends; buses, DCAs, mute groups and the output patch; scenes with notes; a cue list. |
 | **Edit** | Names, colours, patch, faders, mutes, pans, sends, DCA and mute-group membership, preamps, scenes, cues. Every save is a version; every version diffs against the last and can be restored. |
-| **Document** | A PDF: cover, desk and I/O, the input list, the send matrix, buses and outputs, DCAs and mute groups, scenes and cues, the import notes, the version history. An input-list CSV. Label strips as 300 dpi PNGs at the fader pitch you give it. |
+| **Document** | A PDF (A4 or Letter) or a self-contained web page, in five themes: cover with the production details, the desk and its sockets as a map, the signal flow, the input list, every fader as a bar chart, a processing matrix, the send matrix as a heat grid, buses and outputs, DCA and mute-group membership, scenes and cues, a glossary of what the settings mean, the import notes, the version history. An input-list CSV. Label strips as 300 dpi PNGs at the fader pitch you give it. |
 | **Convert** | Any desk to any other: the show is re-keyed into the target's capacity and spelling — names cut to its length, colours mapped to its palette, buses beyond its count dropped with every send into them — and every adaptation and drop is a note the converted show carries. |
 | **Companion** | A Bitfocus Companion page — a mute button per channel, DCA and mute group, a recall per scene — for the `allenheath-sq`, `allenheath-dlive`, `allenheath-avantis` or `yamaha-rcp` module; and reading a page back to check which buttons still match the show. |
 
 ## Songbook Lite — the browser version
 
 **<https://songbook-lite.stoatworks-labs.com>** is the same application built as a website:
-import show files, inspect and edit them, generate the PDF / CSV / label strips / Companion
-pages, convert between desks and write SQ shows and `.CLF` files back — with the Rust core
+import show files, inspect and edit them, generate the documentation (PDF or web page) /
+CSV / label strips / Companion pages, convert between desks and write SQ shows and `.CLF` files back — with the Rust core
 compiled to WebAssembly and the library kept in the browser's IndexedDB. **A show file never
 leaves your machine**; there is no server to send it to. What Lite leaves out is exactly what a
 web page cannot do: talking to a live desk (raw TCP on 51325 / 49280) and cloud sync. It links to
@@ -104,8 +104,9 @@ What has been checked, and against what:
   dLive MIDI over TCP/IP V2.0 and the Avantis MIDI TCP/IP documents, checked against every worked
   example in them and against in-process fake desks. **No desk has answered it yet.** The Avantis
   fader law is assumed to be the dLive one.
-- **Conversion, Companion export, PDF, labels, library, history, folder sync** — unit tested; the
-  PDF and the screenshots above were produced from the browser demo and the desktop app.
+- **Conversion, Companion export, documentation, labels, library, history, folder sync** — unit
+  tested; the PDF and the web page were read page by page in every theme, and the screenshots
+  above were produced from the browser demo and the desktop app.
 - **Cloud sync** — Dropbox, Google Drive and OneDrive providers follow their public API
   references with OAuth PKCE on a loopback redirect; they need an app registration only the
   account holder can make and have not been run against a live account.
