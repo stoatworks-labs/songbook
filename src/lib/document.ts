@@ -352,7 +352,7 @@ export function buildDocument(show: Show, commits: Commit[], opts: DocOptions): 
     d.pagebreak();
     d.h1('Send matrix');
     const sendRows = inputs.filter((c) => c.sends.length);
-    d.p(`Levels in dB. The darker the cell the hotter the send; "off" is a send at −∞ or switched off, and a blank cell was not read. A send marked "pre" ignores the channel fader.${sendRows.length < inputs.length ? ` Channels with no sends read are left out.` : ''}`, true);
+    d.p(`Levels in dB. The hotter the send the stronger the cell is marked — a darker tint, or a heavier underline in the ink-saver theme. "off" is a send at −∞ or switched off, and a blank cell was not read; a send marked "pre" ignores the channel fader.${sendRows.length < inputs.length ? ' Channels with no sends read are left out.' : ''}`, true);
     for (let start = 0; start < sendBuses.length; start += 12) {
       const cols = sendBuses.slice(start, start + 12);
       if (sendBuses.length > 12) d.h2(`${cols[0].label} – ${cols[cols.length - 1].label}`);
