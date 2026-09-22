@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { routeExternalLinksToBrowser } from './lib/externalLinks';
 import './styles.css';
+import { registerServiceWorker } from './register-sw';
 
 // The About dialog's data file ships a version baked at sync time; this is the
 // one the build actually produced. Spread, not assign: about-data.js may not
@@ -19,3 +20,5 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 );
+
+registerServiceWorker();
