@@ -141,10 +141,6 @@ docs/NOTES.md            what was learned building it, including the traps
 wrangler.toml            the Cloudflare Worker that serves Songbook Lite (static assets only)
 ```
 
-<!-- attributions:start -->
-This project is built on other people's work — see [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
-<!-- attributions:end -->
-
 ## Licence
 
 MIT. See [ATTRIBUTIONS.md](ATTRIBUTIONS.md) for what it is built on.
