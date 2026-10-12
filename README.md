@@ -3,17 +3,19 @@
 > **AI-assisted project.** This codebase was created with [Claude Code](https://claude.com/claude-code)
 > (Anthropic), directed and reviewed by a human author, on 2026-09-19. The file readers were built
 > against the vendors' own offline editors (Avantis Director, SQ MixPad, QL Editor, DM3 Editor,
-> TF Editor) and the live drivers against the published protocol documents; the Yamaha SCP driver
-> follows a DM3 that this fleet drove for real on 2026-09-15, but **no desk has yet been pulled from
-> or pushed to by this code**, and the Allen & Heath MIDI/TCP driver has only met an in-process fake.
-> See [Status](#status) for exactly what has been exercised and what has not.
+> TF Editor), and the live drivers against the published protocol documents. The Yamaha SCP
+> driver follows a DM3 that this fleet drove for real on 2026-09-15, but **no desk has yet been
+> pulled from or pushed to by this code**, and the Allen & Heath MIDI/TCP driver has only met an
+> in-process fake. [Status](#status) has the detail on what has and hasn't been tried.
 
-A desktop show file library for digital mixing desks. Keep every show for your **Allen & Heath**
-(SQ, dLive, Avantis) and **Yamaha** (CL/QL, TF, DM3, DM7, RIVAGE PM) desks, with version history;
-inspect the I/O and patch, the channels, the sends, the buses and outputs, the DCAs and mute
-groups, the scenes and cues; generate PDF documentation, an input-list CSV, printable label strips
-and Companion pages; convert a show between desks with an honest report of what carried, what was
-adapted and what was dropped; and pull from or push to the live desk over its own protocol.
+A desktop show file library for digital mixing desks. It keeps every show for your
+**Allen & Heath** (SQ, dLive, Avantis) and **Yamaha** (CL/QL, TF, DM3, DM7, RIVAGE PM) desks, with
+version history, and lets you inspect the I/O and patch, the channels, the sends, the buses and outputs,
+the DCAs and mute groups, the scenes and cues. It generates PDF documentation, an input-list CSV,
+printable label strips and Companion pages. It converts a show between desks with a full report
+of what carried, what was adapted and what was dropped, which is handy when the rider says one
+desk and the venue has another. And it pulls from or pushes to the live desk over the desk's own
+protocol.
 
 Not affiliated with or endorsed by Allen & Heath or Yamaha.
 
@@ -36,16 +38,16 @@ Not affiliated with or endorsed by Allen & Heath or Yamaha.
 
 ## Songbook Lite — the browser version
 
-**<https://songbook-lite.stoatworks-labs.com>** is the same application built as a website:
-import show files, inspect and edit them, generate the documentation (PDF or web page) /
-CSV / label strips / Companion pages, convert between desks and write SQ shows and `.CLF` files back — with the Rust core
-compiled to WebAssembly and the library kept in the browser's IndexedDB. **A show file never
-leaves your machine**; there is no server to send it to. What Lite leaves out is exactly what a
-web page cannot do: talking to a live desk (raw TCP on 51325 / 49280) and cloud sync. It links to
-this repository for the full desktop app.
+**<https://songbook-lite.stoatworks-labs.com>** is the same application built as a website. You
+can import show files, inspect and edit them, generate the documentation (PDF or web page), CSV,
+label strips and Companion pages, convert between desks, and write SQ shows and `.CLF` files back.
+The Rust core is compiled to WebAssembly and the library lives in the browser's IndexedDB. **A
+show file never leaves your machine**, because there's no server to send it to. Lite leaves out
+the things a web page can't do: talking to a live desk (raw TCP on 51325 / 49280) and cloud sync.
+It links back to this repository for the full desktop app.
 
-Build it locally with `npm run build:lite` (needs `rustup target add wasm32-unknown-unknown`);
-`npm run dev:lite` serves it on :5179 once `lite/public/songbook.wasm` exists.
+Build it locally with `npm run build:lite` (it needs `rustup target add wasm32-unknown-unknown`),
+and `npm run dev:lite` serves it on :5179 once `lite/public/songbook.wasm` exists.
 
 ![Songbook Lite in Safari: MixPad's SQ-7 show on the I/O tab, parsed by the Rust core in WebAssembly](docs/screenshots/lite-io.png)
 
@@ -57,69 +59,68 @@ npm run app          # tauri dev
 npm run app:build    # release bundle for this platform
 ```
 
-Open a browser tab at the Vite dev server instead and you get a demo with two example shows in
-memory — every screen works, but files and desks need the desktop app (or Songbook Lite).
+Point a browser tab at the Vite dev server instead and you get a demo with two example shows in
+memory. Every screen works, but files and desks need the desktop app (or Songbook Lite).
 
 ## Status
 
-What has been checked, and against what:
+What's been checked, and against what:
 
-- **Allen & Heath show archives (dLive / Avantis)** — read from the factory shows inside
-  Avantis Director V2.01 and two shows it stored: the input patch (`Channel Mapper`, confirmed by
-  controlled diff), every `Name Colour Manager` block (channel, bus and DCA names and colours),
-  the numbered scenes' names and descriptions. The name-block layout was worked out from those
-  files and has **not** been checked with a rename-and-diff. Faders, sends, preamps and processing
-  are in the scene blobs and not decoded. dLive shows are expected to be the same format; none has
-  been examined.
-- **SQ show files** — `NVDATA.DAT` gives the input patch for Ip1–48 (located by controlled diff
-  in SQ MixPad 1.6.0 as an SQ-7): each record holds a socket index and a class byte — Local and
-  USB seen in MixPad's default show, SLink and I/O Port assumed from its tab order — and Local
-  49–54 are labelled as the stereo TRS pairs because that is where the default show patches
-  Ip41–46. `SCENEnnn.DAT` (scene nnn + 1; the index is 0-based) gives the 16-character scene
-  name and stores the patch the scene was saved with. Names, preamps and the mix are not decoded
-  from the files; the live driver reads the mix instead. The images' checksum (zlib CRC-32 over
-  the body after the 20-byte header) was solved on 2026-09-20; MixPad loaded a Songbook-written
-  show, showed its patch and scene name, and on logout re-saved `NVDATA.DAT` **byte-identical**
-  to what Songbook had written.
-- **Yamaha DM3 / TF scenes** — the MBDF container and the self-describing MMSXLIT payload decode
+- **Allen & Heath show archives (dLive / Avantis):** read from the factory shows inside Avantis
+  Director V2.01 and two shows it stored. That covers the input patch (`Channel Mapper`, confirmed
+  by controlled diff), every `Name Colour Manager` block (channel, bus and DCA names and colours),
+  and the numbered scenes' names and descriptions. The name-block layout was worked out from those
+  files and **hasn't** been checked with a rename-and-diff. Faders, sends, preamps and processing
+  are in the scene blobs and aren't decoded. dLive shows are expected to be the same format, but
+  none has been examined.
+- **SQ show files:** `NVDATA.DAT` gives the input patch for Ip1–48 (located by controlled diff in
+  SQ MixPad 1.6.0 as an SQ-7). Each record holds a socket index and a class byte (Local and USB
+  seen in MixPad's default show, SLink and I/O Port assumed from its tab order), and Local 49–54
+  are labelled as the stereo TRS pairs because that's where the default show patches Ip41–46.
+  `SCENEnnn.DAT` (scene nnn + 1; the index is 0-based) gives the 16-character scene name and
+  stores the patch the scene was saved with. Names, preamps and the mix aren't decoded from the
+  files; the live driver reads the mix instead. The images' checksum (zlib CRC-32 over the body
+  after the 20-byte header) was solved on 2026-09-20. MixPad loaded a Songbook-written show,
+  showed its patch and scene name, and on logout re-saved `NVDATA.DAT` **byte-identical** to what
+  Songbook had written.
+- **Yamaha DM3 / TF scenes:** the MBDF container and the self-describing MMSXLIT payload decode
   all 28 factory scenes shipped inside DM3 Editor V3 and TF Editor V4.50 (names, colours, icons,
   faders, mutes, pans, sends, DCA / mute-group membership, EQ / gate / comp on-off, head amps,
   the input and output patch). The patch-word type codes are the ones seen in those files, never
-  checked against a console's patch screen; the TF's one-byte patch field resolves no connector
-  and says so. DM7 scenes are the same container; none has been seen.
-- **Yamaha CL/QL console files** — the input patch table and the split channel-name table,
-  located by controlled diffs in QL Editor V5.8.1 on a QL5; read back from those exact files.
-  The offsets are absolute, so the adapter validates the table before trusting it. Nothing else
-  in the file is decoded. The file's checksum (a one's-complement word sum over its `MEMAPI`
-  record) was solved on 2026-09-20: the writer reproduces three of QL Editor's own saves
-  byte-for-byte, QL Editor loads a Songbook-written file and shows its edits, and it refuses the
-  same file with one checksum bit flipped ("Checksum error (-2)") — so the law is the one the
-  loader checks.
-- **Yamaha SCP (live)** — the protocol grammar, the `prminfo` dictionary, the `NOTIFY` push and
-  the scene verbs were observed on a real DM3 (V3.00) in this fleet's Dante-BabelBox work; the
+  checked against a console's patch screen, and the TF's one-byte patch field resolves no
+  connector and says so. DM7 scenes are the same container, but none has been seen.
+- **Yamaha CL/QL console files:** the input patch table and the split channel-name table, located
+  by controlled diffs in QL Editor V5.8.1 on a QL5 and read back from those exact files. The
+  offsets are absolute, so the adapter validates the table before trusting it. Nothing else in the
+  file is decoded. The file's checksum (a one's-complement word sum over its `MEMAPI` record) was
+  solved on 2026-09-20: the writer reproduces three of QL Editor's own saves byte-for-byte, QL
+  Editor loads a Songbook-written file and shows its edits, and it refuses the same file with one
+  checksum bit flipped ("Checksum error (-2)"), so the law is the one the loader checks.
+- **Yamaha SCP (live):** the protocol grammar, the `prminfo` dictionary, the `NOTIFY` push and the
+  scene verbs were observed on a real DM3 (V3.00) in this fleet's Dante-BabelBox work, and the
   CL/QL, TF, DM7 and RIVAGE grammars follow the `yamaha-rcp` Companion module. The driver's pull,
   push, recall and store are tested against an in-process fake desk that serves the embedded
-  dictionaries. **It has not yet run against a desk from this code.**
-- **Allen & Heath MIDI/TCP (live)** — message shapes from the SQ MIDI Protocol Issue 5, the
-  dLive MIDI over TCP/IP V2.0 and the Avantis MIDI TCP/IP documents, checked against every worked
+  dictionaries. **It hasn't run against a desk from this code yet.**
+- **Allen & Heath MIDI/TCP (live):** message shapes from the SQ MIDI Protocol Issue 5, the dLive
+  MIDI over TCP/IP V2.0 and the Avantis MIDI TCP/IP documents, checked against every worked
   example in them and against in-process fake desks. **No desk has answered it yet.** The Avantis
   fader law is assumed to be the dLive one.
-- **Conversion, Companion export, documentation, labels, library, history, folder sync** — unit
-  tested; the PDF and the web page were read page by page in every theme, and the screenshots
-  above were produced from the browser demo and the desktop app.
-- **Cloud sync** — Dropbox, Google Drive and OneDrive providers follow their public API
-  references with OAuth PKCE on a loopback redirect; they need an app registration only the
-  account holder can make and have not been run against a live account.
-- **Companion** — the page export matches the control shape Companion 5.0.5 saves and the action
-  ids in the installed modules, but has not yet been imported into a running Companion.
+- **Conversion, Companion export, documentation, labels, library, history, folder sync:** unit
+  tested. The PDF and the web page were read page by page in every theme, and the screenshots
+  above came from the browser demo and the desktop app.
+- **Cloud sync:** the Dropbox, Google Drive and OneDrive providers follow their public API
+  references with OAuth PKCE on a loopback redirect. They need an app registration only the
+  account holder can make, and haven't been run against a live account.
+- **Companion:** the page export matches the control shape Companion 5.0.5 saves and the action
+  ids in the installed modules, but hasn't been imported into a running Companion yet.
 
 Songbook writes two vendor formats, and only the fields it decodes: an SQ show (input patch and
 scene names into copies of its images) and a CL/QL `.CLF` (input patch and channel names). Both
 checksums are solved and both vendors' editors load the written files (MixPad round-trips the
-NVDATA image byte-for-byte; QL Editor checks the checksum and passes ours); whether a console
-accepts a written file has not yet been tried on a desk. dLive / Avantis
-archives and DM3 / TF / DM7 scenes are kept byte-for-byte and exported as they came; the live
-driver is the write path for everything else.
+NVDATA image byte-for-byte, and QL Editor checks the checksum and passes Songbook's). Whether a
+console accepts a written file hasn't been tried on a desk yet. dLive / Avantis archives and DM3
+/ TF / DM7 scenes are kept byte-for-byte and exported as they came, and the live driver is the
+write path for everything else.
 
 ## Layout
 
@@ -143,4 +144,4 @@ wrangler.toml            the Cloudflare Worker that serves Songbook Lite (static
 
 ## Licence
 
-MIT. See [ATTRIBUTIONS.md](ATTRIBUTIONS.md) for what it is built on.
+MIT. See [ATTRIBUTIONS.md](ATTRIBUTIONS.md) for what it's built on.
