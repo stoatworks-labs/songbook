@@ -106,7 +106,8 @@ src-tauri/examples/demo.rs          writes public/demo/*.json; seed.rs imports f
   and either one used to abort the app (in Lite, the tab). Every member is read through
   `songbook_ah::archive::read_member` (32 MiB a member, 256 MiB an archive, nothing reserved on a
   header's say-so) and a tar's whole stream through `archive::Capped`. Never
-  `Vec::with_capacity(entry.size())`.
+  `Vec::with_capacity(entry.size())`. A gzipped `.companionconfig` is unpacked to at most 64 MiB
+  (`songbook-companion`'s `gunzip`) for the same reason.
 - **Songbook Lite and the desktop app share every screen.** A screen that must differ asks
   `isLite` (Devices and Sync are hidden; file dialogs become pickers and downloads). Do not fork a
   component for Lite — add the branch.

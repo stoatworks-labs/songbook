@@ -292,14 +292,28 @@ pub struct ImportReport {
     pub unmatched: usize,
 }
 
+/// The most a gzipped `.companionconfig` may unpack to. A whole working
+/// Companion's database is a few hundred KB; an image on every button of
+/// all 99 pages would come to some 30 MB. Past this it is a deflate bomb,
+/// which would otherwise unpack until memory ran out (Lite's tab keeps
+/// whatever it grew to).
+const UNPACKED_LIMIT: u64 = 64 * 1024 * 1024;
+
+fn gunzip(bytes: &[u8], limit: u64) -> Result<String, String> {
+    let mut dec = std::io::Read::take(flate2::read::GzDecoder::new(bytes), limit + 1);
+    let mut buf = Vec::new();
+    std::io::Read::read_to_end(&mut dec, &mut buf).map_err(|e| e.to_string())?;
+    if buf.len() as u64 > limit {
+        return Err(format!("the file unpacks to more than {} MiB, which no Companion export comes near", limit / (1024 * 1024)));
+    }
+    String::from_utf8(buf).map_err(|e| e.to_string())
+}
+
 /// Read a `.companionconfig` (JSON, or gzip of it) and match its buttons
 /// against the show.
 pub fn import(bytes: &[u8], show: &Show) -> Result<ImportReport, String> {
     let text = if bytes.starts_with(&[0x1f, 0x8b]) {
-        let mut dec = flate2::read::GzDecoder::new(bytes);
-        let mut s = String::new();
-        std::io::Read::read_to_string(&mut dec, &mut s).map_err(|e| e.to_string())?;
-        s
+        gunzip(bytes, UNPACKED_LIMIT)?
     } else {
         String::from_utf8_lossy(bytes).into_owned()
     };
@@ -460,6 +474,27 @@ mod tests {
         assert_eq!(rep.buttons[0].matched.as_deref(), Some("ch:1"));
         assert_eq!(rep.buttons[3].matched.as_deref(), Some("dca:1"));
         assert_eq!(rep.buttons[5].matched.as_deref(), Some("scene:7"));
+    }
+
+    fn gz(data: &[u8]) -> Vec<u8> {
+        use std::io::Write as _;
+        let mut e = flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::default());
+        e.write_all(data).unwrap();
+        e.finish().unwrap()
+    }
+
+    #[test]
+    fn a_gzipped_export_reads_as_its_json_does() {
+        let s = show(Platform::AhSq);
+        let json = serde_json::to_vec(&export(&s, &ExportOptions::default()).unwrap()).unwrap();
+        assert_eq!(import(&gz(&json), &s).unwrap(), import(&json, &s).unwrap());
+    }
+
+    #[test]
+    fn gunzip_stops_at_its_limit() {
+        assert_eq!(gunzip(&gz(&[b' '; 1024]), 1024).unwrap().len(), 1024);
+        let e = gunzip(&gz(&[b' '; 1025]), 1024).unwrap_err();
+        assert!(e.contains("unpacks to more than"), "{e}");
     }
 
     #[test]
