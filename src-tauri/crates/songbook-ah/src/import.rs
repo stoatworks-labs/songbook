@@ -77,7 +77,7 @@ pub fn import_bytes(name: &str, bytes: &[u8], platform: Option<Platform>) -> Res
             if !f.is_file() {
                 continue;
             }
-            let fname = Path::new(f.name()).file_name().map(|s| s.to_string_lossy().to_uppercase()).unwrap_or_default();
+            let fname = Path::new(&*f.name()?).file_name().map(|s| s.to_string_lossy().to_uppercase()).unwrap_or_default();
             if fname.ends_with(".DAT") {
                 let mut data = Vec::with_capacity(f.size() as usize);
                 f.read_to_end(&mut data)?;

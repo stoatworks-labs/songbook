@@ -43,7 +43,7 @@ pub fn unzip(bytes: &[u8]) -> Result<SqFiles> {
         if !f.is_file() {
             continue;
         }
-        let name = std::path::Path::new(f.name()).file_name().map(|s| s.to_string_lossy().to_uppercase()).unwrap_or_default();
+        let name = std::path::Path::new(&*f.name()?).file_name().map(|s| s.to_string_lossy().to_uppercase()).unwrap_or_default();
         let mut data = Vec::with_capacity(f.size() as usize);
         f.read_to_end(&mut data)?;
         files.insert(name, data);
