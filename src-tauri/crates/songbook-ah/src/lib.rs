@@ -3,6 +3,7 @@
 //! Show files come in through [`import_path`] / [`import_bytes`]; live desks
 //! through [`live::Device`]. Everything lands in `songbook_model::Show`.
 
+pub mod archive;
 pub mod dlive;
 pub mod import;
 pub mod live;

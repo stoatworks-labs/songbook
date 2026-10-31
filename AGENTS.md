@@ -101,6 +101,12 @@ src-tauri/examples/demo.rs          writes public/demo/*.json; seed.rs imports f
   function (a clock, `getrandom`) breaks the page. The model takes its clock and its ID seed from
   the host (`set_clock`, `seed_ids`); `uuid` is a native-only dependency. CI checks the import
   section is empty.
+- **An archive's word on its own sizes is not taken.** SQ show zips and A&H show tars can come
+  from someone else: a header can claim an exabyte and a deflate bomb can unpack to gigabytes,
+  and either one used to abort the app (in Lite, the tab). Every member is read through
+  `songbook_ah::archive::read_member` (32 MiB a member, 256 MiB an archive, nothing reserved on a
+  header's say-so) and a tar's whole stream through `archive::Capped`. Never
+  `Vec::with_capacity(entry.size())`.
 - **Songbook Lite and the desktop app share every screen.** A screen that must differ asks
   `isLite` (Devices and Sync are hidden; file dialogs become pickers and downloads). Do not fork a
   component for Lite — add the branch.

@@ -34,9 +34,9 @@
 //! published ones (dLive MIDI over TCP/IP V2.0, Avantis MIDI TCP/IP for
 //! firmware V2.0+).
 
-use std::io::Read;
-
 use songbook_model::{ids, BusKind, FADER_OFF};
+
+use crate::archive;
 
 /// Which desk's channel table applies.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -271,19 +271,20 @@ pub struct Entry {
     pub data: Vec<u8>,
 }
 
-/// Gunzip + untar.
+/// Gunzip + untar, within `archive`'s limits.
 pub fn open(bytes: &[u8]) -> Result<Vec<Entry>, ArchiveError> {
-    let gz = flate2::read::GzDecoder::new(bytes);
+    let gz = archive::Capped::new(flate2::read::GzDecoder::new(bytes));
     let mut ar = tar::Archive::new(gz);
     let mut out = vec![];
+    // The capped stream already holds the total; this keeps one way to read a member.
+    let mut left = archive::ARCHIVE_LIMIT;
     for e in ar.entries()? {
         let mut e = e?;
         if !e.header().entry_type().is_file() {
             continue;
         }
         let path = e.path()?.to_string_lossy().into_owned();
-        let mut data = Vec::with_capacity(e.size() as usize);
-        e.read_to_end(&mut data)?;
+        let data = archive::read_member(&path, &mut e, &mut left)?;
         out.push(Entry { path, data });
     }
     Ok(out)

@@ -15,12 +15,12 @@
 //! that were following the desk's patch — and leaves a scene with a patch of
 //! its own alone, saying so.
 
-use std::io::{Read, Write as _};
+use std::io::Write as _;
 
 use songbook_model::{ChannelKind, Show};
 
 use crate::import::{Error, Result, SqFiles};
-use crate::sq;
+use crate::{archive, sq};
 
 /// What a write carried and what it could not.
 #[derive(Debug, Clone, Default, PartialEq, Eq, serde::Serialize)]
@@ -38,14 +38,14 @@ pub struct WriteReport {
 pub fn unzip(bytes: &[u8]) -> Result<SqFiles> {
     let mut files = SqFiles::new();
     let mut z = zip::ZipArchive::new(std::io::Cursor::new(bytes))?;
+    let mut left = archive::ARCHIVE_LIMIT;
     for i in 0..z.len() {
         let mut f = z.by_index(i)?;
         if !f.is_file() {
             continue;
         }
         let name = std::path::Path::new(&*f.name()?).file_name().map(|s| s.to_string_lossy().to_uppercase()).unwrap_or_default();
-        let mut data = Vec::with_capacity(f.size() as usize);
-        f.read_to_end(&mut data)?;
+        let data = archive::read_member(&name, &mut f, &mut left)?;
         files.insert(name, data);
     }
     Ok(files)
@@ -192,6 +192,12 @@ mod tests {
                 assert_eq!(p[1].socket, None, "{name}");
             }
         }
+    }
+
+    #[test]
+    fn unzip_reserves_nothing_on_a_members_word() {
+        let files = tests_support::synthetic_sq_show();
+        assert_eq!(unzip(&tests_support::zip_claiming_an_exabyte(&files)).unwrap(), files);
     }
 
     #[test]

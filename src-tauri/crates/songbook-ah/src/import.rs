@@ -6,12 +6,11 @@
 //! - **dLive / Avantis**: the show `.tar.gz` Director or the console exports.
 
 use std::collections::BTreeMap;
-use std::io::Read;
 use std::path::Path;
 
 use songbook_model::{build, ids, BusKind, Channel, ChannelKind, Direction, NoteLevel, Platform, Show, SocketKind, UnitRole};
 
-use crate::{dlive, sq};
+use crate::{archive, dlive, sq};
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -72,6 +71,7 @@ pub fn import_bytes(name: &str, bytes: &[u8], platform: Option<Platform>) -> Res
     if bytes.starts_with(b"PK\x03\x04") || lower.ends_with(".zip") {
         let mut files = SqFiles::new();
         let mut z = zip::ZipArchive::new(std::io::Cursor::new(bytes))?;
+        let mut left = archive::ARCHIVE_LIMIT;
         for i in 0..z.len() {
             let mut f = z.by_index(i)?;
             if !f.is_file() {
@@ -79,8 +79,7 @@ pub fn import_bytes(name: &str, bytes: &[u8], platform: Option<Platform>) -> Res
             }
             let fname = Path::new(&*f.name()?).file_name().map(|s| s.to_string_lossy().to_uppercase()).unwrap_or_default();
             if fname.ends_with(".DAT") {
-                let mut data = Vec::with_capacity(f.size() as usize);
-                f.read_to_end(&mut data)?;
+                let data = archive::read_member(&fname, &mut f, &mut left)?;
                 files.insert(fname, data);
             }
         }
@@ -477,6 +476,59 @@ pub mod tests_support {
         files.insert("NVDATA.DAT".into(), nv);
         files
     }
+
+    /// A zip of `files`, deflated, whose every member claims in both of its
+    /// headers to unpack to an exabyte (zip64 sizes, rewritten).
+    pub fn zip_claiming_an_exabyte(files: &SqFiles) -> Vec<u8> {
+        use std::io::Write as _;
+        let mut buf = std::io::Cursor::new(Vec::new());
+        let mut zw = zip::ZipWriter::new(&mut buf);
+        let opts = zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::Deflated).large_file(true);
+        for (n, d) in files {
+            zw.start_file(n.as_str(), opts).unwrap();
+            zw.write_all(d).unwrap();
+        }
+        zw.finish().unwrap();
+        let mut z = buf.into_inner();
+        let u16_at = |z: &[u8], at: usize| u16::from_le_bytes([z[at], z[at + 1]]) as usize;
+        let (mut local, mut central) = (0, 0);
+        let mut at = 0;
+        while at + 46 <= z.len() {
+            // (name length at, extra length at, fixed header length)
+            let layout = match &z[at..at + 4] {
+                b"PK\x03\x04" => (26, 28, 30),
+                b"PK\x01\x02" => (28, 30, 46),
+                _ => {
+                    at += 1;
+                    continue;
+                }
+            };
+            let (n, e) = (u16_at(&z, at + layout.0), u16_at(&z, at + layout.1));
+            let name = String::from_utf8_lossy(&z[at + layout.2..at + layout.2 + n]).into_owned();
+            if !files.contains_key(&name) {
+                at += 1;
+                continue;
+            }
+            let mut x = at + layout.2 + n;
+            let end = x + e;
+            while x + 4 <= end {
+                let (id, size) = (u16_at(&z, x), u16_at(&z, x + 2));
+                if id == 0x0001 && size >= 8 {
+                    // The zip64 field leads with the uncompressed size, and in a
+                    // central record only when the 32-bit field says to look.
+                    let looks = layout.2 == 30 || z[at + 24..at + 28] == [0xFF; 4];
+                    if looks {
+                        z[x + 4..x + 12].copy_from_slice(&(1u64 << 60).to_le_bytes());
+                        if layout.2 == 30 { local += 1 } else { central += 1 }
+                    }
+                }
+                x += 4 + size;
+            }
+            at = end;
+        }
+        assert_eq!((local, central), (files.len(), files.len()), "every header's claim rewritten");
+        z
+    }
 }
 
 #[cfg(test)]
@@ -577,6 +629,43 @@ mod tests {
         // And the zip imports again.
         let again = import_bytes(&vname, &vbytes, None).unwrap();
         assert_eq!(again.show.channels[2].source.as_deref(), Some("skt:local:in:10"));
+    }
+
+    /// A zip's word on its own sizes reserves nothing: an exabyte claim on
+    /// every member of a real show still imports the show.
+    #[test]
+    fn a_zip_claiming_an_exabyte_imports_what_it_holds() {
+        let z = tests_support::zip_claiming_an_exabyte(&tests_support::synthetic_sq_show());
+        let r = import_bytes("Band.zip", &z, None).unwrap();
+        assert_eq!(r.show.channels[2].source.as_deref(), Some("skt:local:in:10"));
+    }
+
+    #[test]
+    fn a_zip_member_that_unpacks_past_the_limit_is_refused() {
+        use std::io::Write as _;
+        let mut buf = std::io::Cursor::new(Vec::new());
+        let mut zw = zip::ZipWriter::new(&mut buf);
+        zw.start_file("NVDATA.DAT", zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::Deflated)).unwrap();
+        zw.write_all(&vec![0u8; crate::archive::MEMBER_LIMIT as usize + 1]).unwrap();
+        zw.finish().unwrap();
+        let z = buf.into_inner();
+        assert!(z.len() < 64 * 1024, "a {} byte bomb", z.len());
+        let e = import_bytes("Bomb.zip", &z, None).err().unwrap();
+        assert!(e.to_string().starts_with("NVDATA.DAT: unpacks to more than 32 MiB"), "{e}");
+    }
+
+    /// A tar header can claim 2^60 bytes (base-256 size) over four.
+    #[test]
+    fn a_tar_member_claiming_an_exabyte_is_an_error_not_an_allocation() {
+        let mut h = tar::Header::new_gnu();
+        h.set_path("Show/Version.dat").unwrap();
+        h.set_size(1 << 60);
+        h.set_mode(0o644);
+        h.set_cksum();
+        let mut ar = tar::Builder::new(flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::default()));
+        ar.append(&h, &b"tiny"[..]).unwrap();
+        let gz = ar.into_inner().unwrap().finish().unwrap();
+        assert!(import_bytes("Claim.tar.gz", &gz, Some(Platform::AhDlive)).is_err());
     }
 
     /// Against a real Director export, when one is on this machine.
