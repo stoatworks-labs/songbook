@@ -16,4 +16,4 @@ tar = "0.4"
 # Held on 9.0: from 9.1 zip always pulls in getrandom with `wasm_js` on wasm32,
 # which links wasm-bindgen into Songbook Lite and gives it imports (ci.yml's
 # "The wasm imports nothing"). 9.0.5 has every fix the advisories asked for.
-zip = { version = "~9.0.5", default-features = false, features = ["deflate"] }
+zip = { version = "~9.1.3", default-features = false, features = ["deflate"] }
