@@ -1,0 +1,14 @@
+# Songbook Lite
+
+> Your mixing desks' show files, in a browser tab: inspect, document, convert, write back
+
+A desktop show-file library for digital mixing desks: Allen & Heath SQ, dLive and Avantis, and Yamaha CL/QL, TF, DM3 and DM7. Every show is kept with a version history and the vendor file it came from. You can look at and edit the I/O and patch, the channels, the sends, the buses, the DCAs and mute groups and the scenes. It writes PDF documentation, an input-list CSV, printable label strips and Bitfocus Companion pages; it converts a show between desks with a report of what carried over, what was adapted and what was dropped; it writes SQ shows and CL/QL files back with their checksums intact; and it pulls from and pushes to the live desk over MIDI/TCP or SCP. Songbook Lite runs the same in a browser tab.
+
+It's a Stoatworks Labs web tool: free, and it runs in a web browser.
+
+## Links
+
+- [Songbook Lite, the app](https://songbook-lite.stoatworks-labs.com/): runs in the browser, free
+- [Project page for Songbook, the desktop app](https://stoatworks-labs.com/software/songbook/)
+- [Web tool page](https://stoatworks-labs.com/web-tools/songbook-lite/)
+- [Source on GitHub](https://github.com/stoatworks-labs/songbook)

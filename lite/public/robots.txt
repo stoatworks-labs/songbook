@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://songbook-lite.stoatworks-labs.com/sitemap.xml

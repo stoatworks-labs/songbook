@@ -6,17 +6,70 @@
     <meta name="color-scheme" content="dark" />
     <meta
       name="description"
-      content="Songbook Lite: open Allen &amp; Heath and Yamaha mixing desk show files in your browser, document them as PDF, CSV and label strips, convert between desks and build Companion pages. Files never leave your machine."
+      content="Free, in a browser tab: open Allen &amp; Heath and Yamaha mixing desk show files, document them as PDF, CSV and label strips, convert between desks and build Companion pages."
     />
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="theme-color" content="#0b0d12" />
-    <title>Songbook Lite</title>
+    <title>Songbook Lite — your mixing desks' show files, in a browser tab</title>
+    <link rel="canonical" href="https://songbook-lite.stoatworks-labs.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Stoatworks Labs" />
+    <meta property="og:title" content="Songbook Lite — your mixing desks' show files, in a browser tab" />
+    <meta property="og:description" content="Free, in a browser tab: open Allen &amp; Heath and Yamaha mixing desk show files, document them as PDF, CSV and label strips, convert between desks and build Companion pages." />
+    <meta property="og:url" content="https://songbook-lite.stoatworks-labs.com/" />
+    <meta property="og:image" content="https://stoatworks-labs.com/thumbs/songbook.png" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="720" />
+    <meta property="og:image:alt" content="Songbook Lite" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- One entity with the tool's page on stoatworks-labs.com: same @id there. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "@id": "https://songbook-lite.stoatworks-labs.com#app",
+        "name": "Songbook Lite",
+        "url": "https://songbook-lite.stoatworks-labs.com",
+        "description": "Free, in a browser tab: open Allen & Heath and Yamaha mixing desk show files, document them as PDF, CSV and label strips, convert between desks and build Companion pages.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any (runs in a web browser)",
+        "isAccessibleForFree": true,
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "GBP"
+        },
+        "author": {
+          "@id": "https://stoatworks-labs.com/#organization",
+          "@type": "Organization",
+          "name": "Stoatworks Labs",
+          "url": "https://stoatworks-labs.com/"
+        },
+        "publisher": {
+          "@id": "https://stoatworks-labs.com/#organization"
+        },
+        "sameAs": [
+          "https://stoatworks-labs.com/web-tools/songbook-lite/",
+          "https://github.com/stoatworks-labs/songbook"
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <noscript>Songbook Lite runs entirely in your browser and needs JavaScript and WebAssembly.</noscript>
+    <noscript>
+      <h1>Songbook Lite</h1>
+      <p>Your mixing desks' show files, in a browser tab: inspect, document, convert, write back.</p>
+      <p>A desktop show-file library for digital mixing desks: Allen &amp; Heath SQ, dLive and Avantis, and Yamaha CL/QL, TF, DM3 and DM7. Every show is kept with a version history and the vendor file it came from. You can look at and edit the I/O and patch, the channels, the sends, the buses, the DCAs and mute groups and the scenes. It writes PDF documentation, an input-list CSV, printable label strips and Bitfocus Companion pages; it converts a show between desks with a report of what carried over, what was adapted and what was dropped; it writes SQ shows and CL/QL files back with their checksums intact; and it pulls from and pushes to the live desk over MIDI/TCP or SCP. Songbook Lite runs the same in a browser tab.</p>
+      <p>Songbook Lite runs entirely in your browser and needs JavaScript and WebAssembly.</p>
+      <ul>
+        <li><a href="https://stoatworks-labs.com/web-tools/songbook-lite/">Songbook Lite on stoatworks-labs.com</a></li>
+        <li><a href="https://stoatworks-labs.com/software/songbook/">Songbook, the desktop app</a></li>
+        <li><a href="https://github.com/stoatworks-labs/songbook">Source on GitHub</a></li>
+      </ul>
+    </noscript>
     <script type="module" src="/main.tsx"></script>
     <!--
       About dialog. Both files are the same vendored copies the desktop app

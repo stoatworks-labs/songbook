@@ -17,6 +17,8 @@ of what carried, what was adapted and what was dropped, which is handy when the 
 desk and the venue has another. And it pulls from or pushes to the live desk over the desk's own
 protocol.
 
+The [project page](https://stoatworks-labs.com/software/songbook/) has more about it. Songbook Lite, the browser version below, runs at [songbook-lite.stoatworks-labs.com](https://songbook-lite.stoatworks-labs.com) and has [a page of its own](https://stoatworks-labs.com/web-tools/songbook-lite/).
+
 Not affiliated with or endorsed by Allen & Heath or Yamaha.
 
 ![The Channels tab: an SQ-5 show with names, colours, patch, faders, assignments and the selected channel's sends](docs/screenshots/channels.png)
