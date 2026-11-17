@@ -51,7 +51,7 @@ It links back to this repository for the full desktop app.
 Build it locally with `npm run build:lite` (it needs `rustup target add wasm32-unknown-unknown`),
 and `npm run dev:lite` serves it on :5179 once `lite/public/songbook.wasm` exists.
 
-![Songbook Lite in Safari: MixPad's SQ-7 show on the I/O tab, parsed by the Rust core in WebAssembly](docs/screenshots/lite-io.png)
+![Songbook Lite: MixPad's SQ-7 show on the I/O tab, parsed by the Rust core in WebAssembly](docs/screenshots/lite-io.png)
 
 ## Running the desktop app
 
@@ -109,7 +109,7 @@ What's been checked, and against what:
   fader law is assumed to be the dLive one.
 - **Conversion, Companion export, documentation, labels, library, history, folder sync:** unit
   tested. The PDF and the web page were read page by page in every theme, and the screenshots
-  above came from the browser demo and the desktop app.
+  above came from the browser demo and Songbook Lite.
 - **Cloud sync:** the Dropbox, Google Drive and OneDrive providers follow their public API
   references with OAuth PKCE on a loopback redirect. They need an app registration only the
   account holder can make, and haven't been run against a live account.
