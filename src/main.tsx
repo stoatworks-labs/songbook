@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 
 import { App } from './App';
 import { routeExternalLinksToBrowser } from './lib/externalLinks';
+// Vendored from stoatworks-backend/theme by scripts/sync-theme.sh: never edit here. First, so styles.css layers over it.
+import './stoatworks-theme.css';
 import './styles.css';
 import { registerServiceWorker } from './register-sw';
 

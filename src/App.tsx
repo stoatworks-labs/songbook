@@ -34,9 +34,12 @@ export function App() {
 
   return (
     <div className="app">
-      <header className="top">
-        <h1>
-          Song<span>book</span>
+      <header className="top sw-bar">
+        <h1 className="sw-brand">
+          <span className="sw-mark" aria-hidden="true">♪</span>
+          <span className="wordmark">
+            Song<span>book</span>
+          </span>
           {isLite ? <em className="lite-mark">Lite</em> : null}
         </h1>
         <span className="tag">{isLite ? 'show files for digital mixing desks — in your browser' : 'show file library for digital mixing desks'}</span>
